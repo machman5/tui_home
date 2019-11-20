@@ -19,7 +19,7 @@ public class ModelActionOpen extends ModelAction {
     {
       MediaModel m = (MediaModel) a;
 	  
-	  Uri uri = FileProvider.getUriForFile(c,BuildConfig.APPLICATION_ID +".provider", m.file);
+	  Uri uri = FileProvider.getUriForFile(c,"ru.fagci.tuihome", m.file);
       setDataAndType(uri, m.getMimeType());
       addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
       if (null != resolveActivity(c.getPackageManager()))
