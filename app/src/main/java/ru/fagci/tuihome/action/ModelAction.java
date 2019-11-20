@@ -3,7 +3,7 @@ import android.content.*;
 import android.os.health.*;
 import android.content.pm.*;
 
-public abstract class ModelAction extends Intent {
+public class ModelAction extends Intent {
   public ModelAction(String name) {
     super(name);
   }

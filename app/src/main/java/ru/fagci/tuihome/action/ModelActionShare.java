@@ -1,6 +1,7 @@
 package ru.fagci.tuihome.action;
-import android.content.*;
-import ru.fagci.tuihome.model.*;
+import android.content.Context;
+import android.content.Intent;
+import ru.fagci.tuihome.model.MediaModel;
 
 public class ModelActionShare extends ModelAction {
   public ModelActionShare() {
@@ -13,13 +14,14 @@ public class ModelActionShare extends ModelAction {
 
     if (a instanceof MediaModel) {
       MediaModel m = (MediaModel) a;
-      
+		
       if (m.file.exists()) {
-        setType(m.getMimeType());
-        putExtra(Intent.EXTRA_STREAM, m.getUri());
-        putExtra(Intent.EXTRA_SUBJECT, "Share subject");
-        putExtra(Intent.EXTRA_TEXT, "Share text");
-        context.startActivity(Intent.createChooser(this, "Share " + m.name));
+		Intent i = new Intent(ACTION_SEND);
+        i.setType(m.getMimeType());
+        i.putExtra(Intent.EXTRA_STREAM, m.getUri());
+        i.putExtra(EXTRA_SUBJECT, "Share subject");
+        i.putExtra(EXTRA_TEXT, "Share text");
+        context.startActivity(createChooser(i, "Share " + m.name));
       }
     }
 
