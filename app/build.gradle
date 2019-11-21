@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
     dexOptions {
-      preDexLibraries false
+        preDexLibraries false
     }
     defaultConfig {
         applicationId "ru.fagci.tuihome"
-        minSdkVersion 17
-        targetSdkVersion 25
+        minSdkVersion 23
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
@@ -24,8 +24,9 @@ android {
 
 dependencies {
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.neurenor:permission-helper:+'
-    //compile 'me.xdrop:fuzzywuzzy:+'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
+    implementation 'com.neurenor:permission-helper:1.0.1'
+    //implementation 'me.xdrop:fuzzywuzzy:+'
 }

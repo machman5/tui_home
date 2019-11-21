@@ -1,46 +1,51 @@
 package ru.fagci.tuihome.loader;
-import android.os.*;
-import java.util.*;
-import ru.fagci.tuihome.model.*;
-import android.content.*;
+
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+
+import java.util.List;
 
 public abstract class ModelLoaderTask extends AsyncTaskLoader<List<?>> {
-  protected Context context;
-  List<?> data;
+    protected Context context;
+    private List<?> data;
 
-  @Override public void deliverResult(List<?> items) {
-    data = items;
-
-    if (isStarted()) {
-      super.deliverResult(items);
-    }
-  }
-
-  @Override protected void onStartLoading() {
-    if (data != null) {
-      deliverResult(data);
+    ModelLoaderTask(Context context) {
+        super(context);
+        this.context = context;
     }
 
-    if (takeContentChanged() || data == null) {
-      forceLoad();
+    @Override
+    public void deliverResult(List<?> items) {
+        data = items;
+
+        if (isStarted()) {
+            super.deliverResult(items);
+        }
     }
-  }
 
-  @Override protected void onStopLoading() {
-    cancelLoad();
-  }
+    @Override
+    protected void onStartLoading() {
+        if (data != null) {
+            deliverResult(data);
+        }
 
-  @Override protected void onReset() {
-    super.onReset();
-    onStopLoading();
-
-    if (data != null) {
-      data = null;
+        if (takeContentChanged() || data == null) {
+            forceLoad();
+        }
     }
-  }
-  
-  public ModelLoaderTask(Context context) {
-    super(context);
-    this.context = context;
-  }
+
+    @Override
+    protected void onStopLoading() {
+        cancelLoad();
+    }
+
+    @Override
+    protected void onReset() {
+        super.onReset();
+        onStopLoading();
+
+        if (data != null) {
+            data = null;
+        }
+    }
 }

@@ -1,27 +1,25 @@
 package ru.fagci.tuihome.action;
-import android.content.*;
-import android.net.*;
-import ru.fagci.tuihome.model.*;
 
-public class ModelActionPhoneCall extends ModelAction 
-{
-  public ModelActionPhoneCall() {
-    super(Intent.ACTION_CALL);
-  }
+import android.content.Context;
+import android.net.Uri;
+import ru.fagci.tuihome.model.ContactModel;
 
-  @Override
-  public Object execute(Context context, Object a, Object b) {
-    if (a != null && a instanceof ContactModel)
-    {
-      addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      setData(Uri.parse("tel:" + ((ContactModel)a).mobileNumber));
-      if (null != resolveActivity(context.getPackageManager()))
-      {
-        context.startActivity(this);
-      }
-      return a;
+public class ModelActionPhoneCall extends ModelAction {
+    public ModelActionPhoneCall() {
+        super(ACTION_CALL);
     }
-    return null;
-  }
+
+    @Override
+    public Object execute(Context context, Object a, Object b) {
+        if (a instanceof ContactModel) {
+            addFlags(FLAG_ACTIVITY_NEW_TASK);
+            setData(Uri.parse("tel:" + ((ContactModel) a).mobileNumber));
+            if (null != resolveActivity(context.getPackageManager())) {
+                context.startActivity(this);
+            }
+            return a;
+        }
+        return null;
+    }
 
 }

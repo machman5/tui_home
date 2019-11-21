@@ -1,17 +1,18 @@
 package ru.fagci.tuihome.model;
-import android.util.*;
-import android.graphics.*;
+
+import android.graphics.Bitmap;
+import android.util.LruCache;
 
 public class ModelIconCache extends LruCache<String, Bitmap> {
 
-  public ModelIconCache() {
-    super(1 * 1024 * 1024);
-  }
+    public ModelIconCache() {
+        super(1024 * 1024);
+    }
 
-  @Override
-  protected int sizeOf( String key, Bitmap value ) {
-    return value.getByteCount();
-  }
+    @Override
+    protected int sizeOf(String key, Bitmap value) {
+        return value.getByteCount();
+    }
 /*
   @Override
   protected void entryRemoved( boolean evicted, String key, Bitmap oldValue, Bitmap newValue ) {
