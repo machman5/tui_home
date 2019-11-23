@@ -10,13 +10,13 @@
 		android:id="@+id/suggest_itemProgressBar"
 		android:layout_width="36dp"
 		android:layout_height="36dp"
-		android:layout_alignParentLeft="true"/>
+		android:layout_alignParentStart="true"/>
 
 	<ImageView
 		android:id="@+id/suggest_itemImageView"
 		android:layout_height="match_parent"
 		android:layout_width="36dp"
-		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
 		android:src="@drawable/ic_launcher"
 		android:maxHeight="36dp"
 		android:maxWidth="36dp"
@@ -33,21 +33,20 @@
 		android:layout_height="wrap_content"
 		android:gravity="top"
 		android:textSize="14sp"
-		android:layout_marginLeft="8dp"/>
+		android:layout_marginStart="8dp"/>
 
 	<TextView
 		android:id="@+id/suggest_itemSubtitle"
 		android:text="Item subtitle"
-		android:singleLine="false"
+		android:singleLine="true"
 		android:layout_width="wrap_content"
 		android:layout_height="match_parent"
-		android:textSize="11sp"
+		android:textSize="12sp"
 		android:layout_below="@id/suggest_itemTextView"
-		android:layout_toRightOf="@id/suggest_itemImageView"
-		android:layout_marginLeft="8dp"
+		android:layout_toEndOf="@id/suggest_itemImageView"
+		android:layout_marginStart="8dp"
 		android:alpha="0.6"
-		android:ellipsize="middle"
-		android:lines="1"/>
+		android:ellipsize="middle" />
 
 	<TextView
 		android:id="@+id/suggest_itemDesc"
@@ -64,10 +63,11 @@
 		style="?android:attr/buttonBarButtonStyle"
 		android:layout_height="match_parent"
 		android:src="@drawable/ic_more_vert"
-		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
 		android:layout_centerVertical="true"
 		android:layout_centerHorizontal="true"
-		android:maxWidth="36dp"/>
+		android:maxWidth="36dp"
+		android:contentDescription="TODO" />
 
 </RelativeLayout>
 

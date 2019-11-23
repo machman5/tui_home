@@ -1,7 +1,7 @@
 package ru.fagci.tuihome.loader;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+import androidx.loader.content.AsyncTaskLoader;
 
 import java.util.List;
 

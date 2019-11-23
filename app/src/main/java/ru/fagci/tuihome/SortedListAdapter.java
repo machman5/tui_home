@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
@@ -12,22 +13,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * Created with Android Studio
- * User: Xaver
- * Date: 13/08/16
- */
-public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel> extends RecyclerView.Adapter<SortedListAdapter.ViewHolder<? extends T>> {
+public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
+        extends RecyclerView.Adapter<SortedListAdapter.ViewHolder<? extends T>> {
 
     private final LayoutInflater mInflater;
     private final SortedList<T> mSortedList;
     private final Comparator<T> mComparator;
 
-    public SortedListAdapter(Context context, Class<T> itemClass, Comparator<T> comparator) {
+    SortedListAdapter(Context context, Class<T> itemClass, Comparator<T> comparator) {
         mInflater = LayoutInflater.from(context);
         mComparator = comparator;
 
-        mSortedList = new SortedList<T>(itemClass, new SortedList.Callback<T>() {
+        mSortedList = new SortedList<>(itemClass, new SortedList.Callback<T>() {
             @Override
             public int compare(T a, T b) {
                 return mComparator.compare(a, b);
@@ -65,8 +62,9 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel> e
         });
     }
 
+    @NonNull
     @Override
-    public final ViewHolder<? extends T> onCreateViewHolder(ViewGroup parent, int viewType) {
+    public final ViewHolder<? extends T> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return onCreateViewHolder(mInflater, parent, viewType);
     }
 
@@ -77,7 +75,7 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel> e
     protected abstract boolean areItemContentsTheSame(T oldItem, T newItem);
 
     @Override
-    public final void onBindViewHolder(ViewHolder<? extends T> holder, int position) {
+    public final void onBindViewHolder(@NonNull ViewHolder<? extends T> holder, int position) {
         final T item = mSortedList.get(position);
         ((ViewHolder<T>) holder).bind(item);
     }
@@ -104,16 +102,6 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel> e
             }
         }
         return list;
-    }
-
-    public final T filterOne(Filter<T> filter) {
-        for (int i = 0, count = mSortedList.size(); i < count; i++) {
-            final T item = mSortedList.get(i);
-            if (filter.test(item)) {
-                return item;
-            }
-        }
-        return null;
     }
 
     public interface Editor<T extends ViewModel> {

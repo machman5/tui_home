@@ -5,7 +5,7 @@
 	android:layout_width="wrap_content"
 	android:layout_height="36dp"
 	android:orientation="horizontal"
-	android:gravity="left|center_vertical"
+	android:gravity="start|center_vertical"
 	android:minWidth="36dp"
 	android:clipToPadding="false">
 
@@ -15,7 +15,7 @@
 		android:layout_height="wrap_content"
 		android:text="Very long text here!!!"
 		android:textColor="#FFFFFF"
-		android:textSize="11sp"
+		android:textSize="12sp"
 		android:maxWidth="180dp"
 		android:singleLine="true"
 		android:ellipsize="middle"
