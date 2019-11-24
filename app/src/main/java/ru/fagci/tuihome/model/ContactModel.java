@@ -1,8 +1,5 @@
 package ru.fagci.tuihome.model;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionPhoneCall;
@@ -20,11 +17,6 @@ public class ContactModel extends ModelObject {
     }
 
     @Override
-    public Bitmap createBitmap(Context context) {
-        return bitmap;
-    }
-
-    @Override
     public String getDescription() {
         return mobileNumber;
     }
@@ -34,10 +26,5 @@ public class ContactModel extends ModelObject {
         List<ModelAction> aa = super.getAvailableActions();
         aa.add(new ModelActionPhoneCall());
         return aa;
-    }
-
-    @Override
-    public int getColor() {
-        return Color.rgb(200, 128, 128);
     }
 }

@@ -1,13 +1,16 @@
 package ru.fagci.tuihome;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 import ru.fagci.tuihome.action.ModelAction;
+import ru.fagci.tuihome.model.AppModel;
+import ru.fagci.tuihome.model.ContactModel;
+import ru.fagci.tuihome.model.MediaModel;
 import ru.fagci.tuihome.model.ModelObject;
 import ru.fagci.tuihome.task.TaskExecutor;
 
@@ -16,51 +19,69 @@ import java.util.List;
 
 public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
 
+    private final View view;
+    private final ImageView icon;
     private final TextView name;
+    private final TextView description;
 
-    public CmdChainViewHolder(View v) {
+    CmdChainViewHolder(View v) {
         super(v);
+        view = v;
+        icon = v.findViewById(R.id.cmd_chain_itemIcon);
         name = v.findViewById(R.id.cmd_chain_itemName);
+        description = v.findViewById(R.id.cmd_chain_itemDescription);
     }
 
     protected void performBind(SortedListAdapter.ViewModel vm) {
         final ModelObject m = (ModelObject) vm;
+        setIcon(m.getBitmap(itemView.getContext()));
         setText(m.name);
-        setBgColor(m.getColor());
+        setDescription(m.getDescription());
 
-        name.setOnClickListener(new OnClickListener() {
+        if (vm instanceof AppModel) {
+            setBgColor(Color.rgb(128, 80, 80));
+        } else if (vm instanceof ContactModel) {
+            setBgColor(Color.rgb(80, 128, 80));
+        } else if (vm instanceof MediaModel) {
+            setBgColor(Color.rgb(80, 80, 128));
+        } else {
+            setBgColor(0);
+        }
 
-            @Override
-            public void onClick(View p1) {
-                final PopupMenu popupMenu = new PopupMenu(name.getContext(), p1);
-                final Menu menu = popupMenu.getMenu();
-                final List<ModelAction> actionList = m.getAvailableActions();
-                int menuItemId = 0;
+        name.setOnClickListener(p1 -> {
+            final PopupMenu popupMenu = new PopupMenu(name.getContext(), p1);
+            final Menu menu = popupMenu.getMenu();
+            final List<ModelAction> actionList = m.getAvailableActions();
+            int menuItemId = 0;
 
-                for (ModelAction action : actionList) {
-                    menu.add(0, menuItemId++, 0, action.getName());
-                }
-
-                popupMenu.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem mItem) {
-                        TaskExecutor taskExecutor = new TaskExecutor(name.getContext());
-                        taskExecutor.add(m, actionList.get(mItem.getItemId()));
-                        taskExecutor.execute();
-                        return false;
-                    }
-                });
-
-                popupMenu.show();
+            for (ModelAction action : actionList) {
+                menu.add(0, menuItemId++, 0, action.getName());
             }
+
+            popupMenu.setOnMenuItemClickListener(mItem -> {
+                TaskExecutor taskExecutor = new TaskExecutor(name.getContext());
+                taskExecutor.add(m, actionList.get(mItem.getItemId()));
+                taskExecutor.execute();
+                return false;
+            });
+
+            popupMenu.show();
         });
     }
 
-    public void setText(String t) {
+    private void setIcon(Bitmap b) {
+        icon.setImageBitmap(b);
+    }
+
+    private void setText(String t) {
         name.setText(t);
     }
 
-    public void setBgColor(int c) {
-        name.setBackgroundColor(c);
+    private void setDescription(String t) {
+        description.setText(t);
+    }
+
+    private void setBgColor(int c) {
+        view.setBackgroundColor(c);
     }
 }

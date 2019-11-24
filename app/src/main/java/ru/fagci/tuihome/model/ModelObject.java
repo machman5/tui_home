@@ -2,7 +2,6 @@ package ru.fagci.tuihome.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import ru.fagci.tuihome.SortedListAdapter;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionShare;
@@ -14,13 +13,16 @@ import java.util.regex.Pattern;
 
 public abstract class ModelObject implements SortedListAdapter.ViewModel {
     private static int __id = 0;
+    private int _id;
+
+    String uid;
     public final String name;
-    public final String searchString;
-    public String uid;
+    private final String searchString;
+
     public long lastModified = 0;
     public int searchWeight = 100;
+
     public Bitmap bitmap;
-    private int _id = 0;
 
     public ModelObject(String name, String searchString) {
         _id = __id++;
@@ -65,7 +67,9 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
         return bitmap;
     }
 
-    public abstract Bitmap createBitmap(Context context);
+    public Bitmap createBitmap(Context context) {
+        return bitmap;
+    }
 
     public List<ModelAction> getAvailableActions() {
         final List<ModelAction> aa = new ArrayList<>();
@@ -75,9 +79,5 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
 
     public int getIncrementedId() {
         return this._id;
-    }
-
-    public int getColor() {
-        return Color.GRAY;
     }
 }

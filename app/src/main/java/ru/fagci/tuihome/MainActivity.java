@@ -11,7 +11,6 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.neurenor.permissions.PermissionCallback;
 import com.neurenor.permissions.PermissionsHelper;
 import ru.fagci.tuihome.loader.AppLoaderTask;
 import ru.fagci.tuihome.loader.ContactLoaderTask;
@@ -118,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         cmdLine.setIconifiedByDefault(false);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
+
+        cmdChain.addItemDecoration(new SpacesItemDecoration(8));
         cmdChain.setLayoutManager(layoutManager);
         cmdChainAdapter = new CmdChainAdapter(this);
         cmdChain.setAdapter(cmdChainAdapter);
@@ -127,20 +128,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loaderManager.initLoader(LOADER_APPS, null, this);
 
         permissionHelper = new PermissionsHelper(this);
-        permissionHelper.requestPermissions(permissions, new PermissionCallback() {
-            @Override
-            public void onResponseReceived(HashMap<String, PermissionsHelper.PermissionGrant> p) {
-                for (String perm : p.keySet()) {
-                    PermissionsHelper.PermissionGrant g = p.get(perm);
-                    if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
-                    switch (perm) {
-                        case Manifest.permission.READ_CONTACTS:
-                            loaderManager.initLoader(LOADER_CONTACTS, null, MainActivity.this);
-                            break;
-                        case Manifest.permission.READ_EXTERNAL_STORAGE:
-                            loaderManager.initLoader(LOADER_MEDIA, null, MainActivity.this);
-                            break;
-                    }
+        permissionHelper.requestPermissions(permissions, p -> {
+            for (String perm : p.keySet()) {
+                PermissionsHelper.PermissionGrant g = p.get(perm);
+                if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
+                switch (perm) {
+                    case Manifest.permission.READ_CONTACTS:
+                        loaderManager.initLoader(LOADER_CONTACTS, null, MainActivity.this);
+                        break;
+                    case Manifest.permission.READ_EXTERNAL_STORAGE:
+                        loaderManager.initLoader(LOADER_MEDIA, null, MainActivity.this);
+                        break;
                 }
             }
         });

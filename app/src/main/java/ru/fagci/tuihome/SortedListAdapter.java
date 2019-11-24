@@ -157,32 +157,29 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
 
         @Override
         public Editor<T> add(final T item) {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
-                    mSortedList.add(item);
-                }
-            });
+            mActions.add(list -> mSortedList.add(item));
             return this;
         }
 
         @Override
         public Editor<T> add(final List<T> items) {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
-                    Collections.sort(items, mComparator);
-                    mSortedList.addAll(items);
-                }
+            mActions.add(list -> {
+                Collections.sort(items, mComparator);
+                mSortedList.addAll(items);
             });
             return this;
         }
 
         @Override
         public Editor<T> remove(final T item) {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
+            mActions.add(list -> mSortedList.remove(item));
+            return this;
+        }
+
+        @Override
+        public Editor<T> remove(final List<T> items) {
+            mActions.add(list -> {
+                for (T item : items) {
                     mSortedList.remove(item);
                 }
             });
@@ -190,47 +187,21 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
         }
 
         @Override
-        public Editor<T> remove(final List<T> items) {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
-                    for (T item : items) {
-                        mSortedList.remove(item);
-                    }
-                }
-            });
-            return this;
-        }
-
-        @Override
         public Editor<T> replaceAll(final List<T> items) {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
-                    final List<T> itemsToRemove = filter(new Filter<T>() {
-                        @Override
-                        public boolean test(T item) {
-                            return !items.contains(item);
-                        }
-                    });
-                    for (int i = itemsToRemove.size() - 1; i >= 0; i--) {
-                        final T item = itemsToRemove.get(i);
-                        mSortedList.remove(item);
-                    }
-                    mSortedList.addAll(items);
+            mActions.add(list -> {
+                final List<T> itemsToRemove = filter(item -> !items.contains(item));
+                for (int i = itemsToRemove.size() - 1; i >= 0; i--) {
+                    final T item = itemsToRemove.get(i);
+                    mSortedList.remove(item);
                 }
+                mSortedList.addAll(items);
             });
             return this;
         }
 
         @Override
         public Editor<T> removeAll() {
-            mActions.add(new Action<T>() {
-                @Override
-                public void perform(SortedList<T> list) {
-                    mSortedList.clear();
-                }
-            });
+            mActions.add(list -> mSortedList.clear());
             return this;
         }
 

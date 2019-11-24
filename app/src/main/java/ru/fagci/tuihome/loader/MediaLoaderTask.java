@@ -14,7 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MediaLoaderTask extends ModelLoaderTask {
-    private final static Comparator comparator = new LastModifiedComparator();
+    private final static Comparator<ModelObject> comparator = new LastModifiedComparator();
     private File baseDirectory;
     private FileObserver fObserver;
     private List<ModelObject> items = new ArrayList<>();
@@ -22,17 +22,16 @@ public class MediaLoaderTask extends ModelLoaderTask {
     public MediaLoaderTask(Context context) {
         super(context);
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            this.baseDirectory = new File(Environment.getExternalStorageDirectory().toString());
+            this.baseDirectory = Environment.getExternalStorageDirectory();
         }
     }
 
     @Override
     protected void onStartLoading() {
         if (null == fObserver) {
-            fObserver = new FileObserver(baseDirectory.getPath()) {
+            fObserver = new FileObserver(baseDirectory.getAbsolutePath(), FileObserver.CREATE | FileObserver.DELETE) {
                 @Override
                 public void onEvent(int event, String path) {
-                    if (event != FileObserver.CREATE && event != FileObserver.DELETE) return;
                     onContentChanged();
                 }
             };
@@ -44,19 +43,19 @@ public class MediaLoaderTask extends ModelLoaderTask {
     @Override
     public List<ModelObject> loadInBackground() {
         items.clear(); // TODO: сделать кэширование
-        walkdir(baseDirectory, items);
+        walkDir(baseDirectory, items);
         Collections.sort(items, comparator);
         return items;
     }
 
-    public void walkdir(File dir, List<ModelObject> items) {
+    private void walkDir(File dir, List<ModelObject> items) {
         if (dir == null || dir.length() == 0) return;
 
         for (File f : dir.listFiles()) {
             if (isLoadInBackgroundCanceled()) return;
             if (f.isHidden()) continue;
             if (f.isDirectory()) {
-                walkdir(f, items);
+                walkDir(f, items);
                 continue;
             }
             items.add(new MediaModel(f));

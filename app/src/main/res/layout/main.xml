@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:gravity="center"
-	android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-	<ScrollView
-		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-		<TextView
-			android:id="@+id/output"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textSize="12sp"
-			android:typeface="monospace" />
+        <TextView
+            android:id="@+id/output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:typeface="monospace" />
 
-	</ScrollView>
+    </ScrollView>
 
-	<androidx.recyclerview.widget.RecyclerView
-		android:id="@+id/main_commandsChain"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="#000000"
-		android:minHeight="108dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_commandsChain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="bottom"
-		android:orientation="horizontal"
-		android:baselineAligned="false">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-		<SearchView
-			android:id="@+id/cmdline"
-			android:layout_height="wrap_content"
-			android:layout_width="match_parent"
-			android:hint="Command"
-			android:inputType="text" />
+        <SearchView
+            android:id="@+id/cmdline"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:hint="Search"
+            android:inputType="textNoSuggestions" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
 
