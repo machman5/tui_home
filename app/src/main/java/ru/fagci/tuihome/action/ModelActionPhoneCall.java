@@ -10,16 +10,15 @@ public class ModelActionPhoneCall extends ModelAction {
     }
 
     @Override
-    public Object execute(Context context, Object a, Object b) {
-        if (a instanceof ContactModel) {
+    public Object execute(Context context, Object modelObject) {
+        if (modelObject instanceof ContactModel) {
             addFlags(FLAG_ACTIVITY_NEW_TASK);
-            setData(Uri.parse("tel:" + ((ContactModel) a).mobileNumber));
+            setData(Uri.parse("tel:" + ((ContactModel) modelObject).mobileNumber));
             if (null != resolveActivity(context.getPackageManager())) {
                 context.startActivity(this);
             }
-            return a;
         }
-        return null;
+        return modelObject;
     }
 
 }

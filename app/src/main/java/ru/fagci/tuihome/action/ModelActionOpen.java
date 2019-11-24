@@ -11,17 +11,17 @@ public class ModelActionOpen extends ModelAction {
     }
 
     @Override
-    public Object execute(Context c, Object a, Object b) {
-        if (a instanceof MediaModel) {
-            MediaModel m = (MediaModel) a;
+    public Object execute(Context context, Object modelObject) {
+        if (modelObject instanceof MediaModel) {
+            MediaModel m = (MediaModel) modelObject;
 
-            Uri uri = FileProvider.getUriForFile(c, "ru.fagci.tuihome", m.file);
+            Uri uri = FileProvider.getUriForFile(context, "ru.fagci.tuihome", m.file);
             setDataAndType(uri, m.getMimeType());
             addFlags(FLAG_GRANT_READ_URI_PERMISSION);
-            if (null != resolveActivity(c.getPackageManager())) {
-                c.startActivity(this);
+            if (null != resolveActivity(context.getPackageManager())) {
+                context.startActivity(this);
             }
         }
-        return a;
+        return modelObject;
     }
 }

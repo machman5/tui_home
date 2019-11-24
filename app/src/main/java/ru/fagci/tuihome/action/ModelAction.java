@@ -11,8 +11,8 @@ public class ModelAction extends Intent {
     }
 
 
-    public Object execute(Context c, Object a, Object b) {
-        PackageManager packageManager = c.getPackageManager();
+    public Object execute(Context context, Object modelObject) {
+        PackageManager packageManager = context.getPackageManager();
         ComponentName cn = resolveActivity(packageManager);
         if (null == cn) return null;
         return null; // TODO: понять, что тут предполагалось сделать

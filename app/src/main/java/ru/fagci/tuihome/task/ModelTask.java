@@ -3,12 +3,13 @@ package ru.fagci.tuihome.task;
 import android.content.Context;
 import ru.fagci.tuihome.action.ModelAction;
 
-public class ModelTask {
-    Object modelA;
-    Object modelB;
+import java.util.ArrayList;
+
+public class ModelTask extends ArrayList<Object> {
     ModelAction action;
 
     public Object execute(Context context) {
-        return action.execute(context, modelA, modelB);
+        if (size() == 1) return action.execute(context, get(0));
+        return null;
     }
 }
