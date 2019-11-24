@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(@NonNull Loader<List<ModelObject>> loader, List<ModelObject> items) {
         modelObjects.addAll(items);
-        cmdChainAdapter.edit().replaceAll(items).commit();
+        cmdChainAdapter.edit().replaceAll(modelObjects).commit();
         String name = loader.getClass().getSimpleName();
         long t = System.nanoTime() - timing.get(name);
         output.append(name + " finished (" + items.size() + "), " + String.format("%.2fms", t / 1000000.0f) + "\n");

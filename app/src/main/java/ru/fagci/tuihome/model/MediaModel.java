@@ -18,6 +18,7 @@ public class MediaModel extends ModelObject {
     public MediaModel(File f) {
         super(f.getName(), f.getName());
         this.file = f;
+        size = f.length();
         lastModified = f.lastModified();
         String hash = String.valueOf(lastModified);
         uid = getClass().getSimpleName() + ":" + file.getAbsolutePath() + ":" + hash;

@@ -6,7 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.Contacts;
 import ru.fagci.tuihome.model.ContactModel;
 
 import java.io.InputStream;
@@ -21,30 +22,33 @@ public class ContactLoaderTask extends ModelLoaderTask {
     @Override
     public List<ContactModel> loadInBackground() {
         List<ContactModel> entries = new ArrayList<>();
+
         final ContentResolver contentResolver = context.getContentResolver();
-        Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        if (cursor.getCount() == 0) return entries;
+
+        Cursor cursor = contentResolver.query(Contacts.CONTENT_URI, null, null, null, null);
+
+        if (cursor == null || cursor.getCount() == 0) return entries;
 
         while (cursor.moveToNext()) {
             if (isLoadInBackgroundCanceled()) break;
-            String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) == 0) continue;
+            if (cursor.getInt(cursor.getColumnIndex(Contacts.HAS_PHONE_NUMBER)) == 0) continue;
 
-            Cursor cursorInfo = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(),
-                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(id)));
+            String id = cursor.getString(cursor.getColumnIndex(Contacts._ID));
 
-            Bitmap photo = null;
-            if (inputStream != null) {
-                photo = BitmapFactory.decodeStream(inputStream);
-            }
+            Cursor cursorInfo = contentResolver.query(Phone.CONTENT_URI, null,
+                    Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+
+            if(cursorInfo == null) continue;
+
+            InputStream inputStream = Contacts.openContactPhotoInputStream(contentResolver,
+                    ContentUris.withAppendedId(Contacts.CONTENT_URI, Long.valueOf(id)));
+
+            Bitmap photo = inputStream != null ? BitmapFactory.decodeStream(inputStream) : null;
 
             while (cursorInfo.moveToNext()) {
-                ContactModel info = new ContactModel(
-                        cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
-                        cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                );
+                String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                String number = cursorInfo.getString(cursorInfo.getColumnIndex(Phone.NUMBER));
+                ContactModel info = new ContactModel(name, number);
 
                 if (null != photo) info.bitmap = Bitmap.createScaledBitmap(photo, 48, 48, false);
 
@@ -53,6 +57,7 @@ public class ContactLoaderTask extends ModelLoaderTask {
 
             cursorInfo.close();
         }
+
         cursor.close();
         return entries;
     }

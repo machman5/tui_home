@@ -23,6 +23,8 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
     private final ImageView icon;
     private final TextView name;
     private final TextView description;
+    private final TextView date;
+    private final TextView size;
 
     CmdChainViewHolder(View v) {
         super(v);
@@ -30,13 +32,17 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
         icon = v.findViewById(R.id.cmd_chain_itemIcon);
         name = v.findViewById(R.id.cmd_chain_itemName);
         description = v.findViewById(R.id.cmd_chain_itemDescription);
+        date = v.findViewById(R.id.cmd_chain_itemDate);
+        size = v.findViewById(R.id.cmd_chain_itemSize);
     }
 
     protected void performBind(SortedListAdapter.ViewModel vm) {
         final ModelObject m = (ModelObject) vm;
-        setIcon(m.getBitmap(itemView.getContext()));
+        setIcon(m.getBitmap(view.getContext()));
         setText(m.name);
         setDescription(m.getDescription());
+        setDate(m.getModifiedDate(view.getContext()));
+        setSize(m.getSize());
 
         if (vm instanceof AppModel) {
             setBgColor(Color.rgb(128, 80, 80));
@@ -49,7 +55,7 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
         }
 
         name.setOnClickListener(p1 -> {
-            final PopupMenu popupMenu = new PopupMenu(name.getContext(), p1);
+            final PopupMenu popupMenu = new PopupMenu(view.getContext(), p1);
             final Menu menu = popupMenu.getMenu();
             final List<ModelAction> actionList = m.getAvailableActions();
             int menuItemId = 0;
@@ -59,7 +65,7 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
             }
 
             popupMenu.setOnMenuItemClickListener(mItem -> {
-                TaskExecutor taskExecutor = new TaskExecutor(name.getContext());
+                TaskExecutor taskExecutor = new TaskExecutor(view.getContext());
                 taskExecutor.add(m, actionList.get(mItem.getItemId()));
                 taskExecutor.execute();
                 return false;
@@ -79,6 +85,15 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
 
     private void setDescription(String t) {
         description.setText(t);
+    }
+
+    private void setDate(String t) {
+        date.setText(t);
+    }
+
+
+    private void setSize(String t) {
+        size.setText(t);
     }
 
     private void setBgColor(int c) {

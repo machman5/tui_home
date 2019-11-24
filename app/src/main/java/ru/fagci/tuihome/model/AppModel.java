@@ -8,6 +8,7 @@ import ru.fagci.tuihome.action.ModelActionRun;
 import ru.fagci.tuihome.loader.AppLoaderTask;
 import ru.fagci.tuihome.utils.GraphicsUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,12 @@ public class AppModel extends ModelObject {
     public AppModel(ApplicationInfo appInfo) {
         super(appInfo.loadLabel(AppLoaderTask.pm).toString(), appInfo.loadLabel(AppLoaderTask.pm).toString() + " " + appInfo.packageName);
         this.appInfo = appInfo;
+
+        File file = new File(appInfo.publicSourceDir);
+        size = file.length();
+        lastModified = file.lastModified();
+
+
         uid = getClass().getSimpleName() + ":" + appInfo.packageName;
     }
 

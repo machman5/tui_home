@@ -5,10 +5,13 @@ import android.graphics.Bitmap;
 import ru.fagci.tuihome.SortedListAdapter;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionShare;
+import ru.fagci.tuihome.utils.FileUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public abstract class ModelObject implements SortedListAdapter.ViewModel {
@@ -18,6 +21,7 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
     String uid;
     public final String name;
     private final String searchString;
+    protected long size = 0;
 
     public long lastModified = 0;
     public int searchWeight = 100;
@@ -77,7 +81,13 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
         return aa;
     }
 
-    public int getIncrementedId() {
-        return this._id;
+    public String getSize() {
+        return FileUtils.getReadableFileSize(size);
+    }
+
+    public String getModifiedDate(Context c) {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault());
+        Date date = new Date(lastModified);
+        return format.format(date);
     }
 }
