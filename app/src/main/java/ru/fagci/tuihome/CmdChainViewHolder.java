@@ -54,7 +54,7 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
             setBgColor(0);
         }
 
-        name.setOnClickListener(p1 -> {
+        view.setOnClickListener(p1 -> {
             final PopupMenu popupMenu = new PopupMenu(view.getContext(), p1);
             final Menu menu = popupMenu.getMenu();
             final List<ModelAction> actionList = m.getAvailableActions();
