@@ -33,7 +33,7 @@ public class MediaModel extends ModelObject {
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(getExtension());
     }
 
-    public String getExtension() {
+    private String getExtension() {
         return MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
     }
 

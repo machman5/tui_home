@@ -20,6 +20,7 @@ import ru.fagci.tuihome.model.ModelObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static android.Manifest.permission.*;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static HashMap<String, Long> timing = new HashMap<>();
 
     private PermissionsHelper permissionHelper;
-    private String[] permissions = new String[]{
+    private final String[] permissions = new String[]{
             CALL_PHONE,
             READ_CONTACTS,
             PACKAGE_USAGE_STATS,
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         cmdChainAdapter.edit().replaceAll(modelObjects).commit();
         String name = loader.getClass().getSimpleName();
         long t = System.nanoTime() - timing.get(name);
-        output.append(name + " finished (" + items.size() + "), " + String.format("%.2fms", t / 1000000.0f) + "\n");
+        output.append(name + " finished (" + items.size() + "), " + String.format(Locale.getDefault(), "%.2fms", t / 1000000.0f) + "\n");
     }
 
     @Override

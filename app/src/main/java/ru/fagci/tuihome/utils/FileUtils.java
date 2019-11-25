@@ -49,9 +49,9 @@ public class FileUtils {
     }
 
     public static Bitmap getThumbnailSimple(File file) {
-        final int THUMBSIZE = 96;
+        final int THUMB_SIZE = 96;
 
         return ThumbnailUtils.extractThumbnail(
-                BitmapFactory.decodeFile(file.getAbsolutePath()), THUMBSIZE, THUMBSIZE);
+                BitmapFactory.decodeFile(file.getAbsolutePath()), THUMB_SIZE, THUMB_SIZE);
     }
 }

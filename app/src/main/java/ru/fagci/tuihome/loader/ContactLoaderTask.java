@@ -38,10 +38,10 @@ public class ContactLoaderTask extends ModelLoaderTask {
             Cursor cursorInfo = contentResolver.query(Phone.CONTENT_URI, null,
                     Phone.CONTACT_ID + " = ?", new String[]{id}, null);
 
-            if(cursorInfo == null) continue;
+            if (cursorInfo == null) continue;
 
             InputStream inputStream = Contacts.openContactPhotoInputStream(contentResolver,
-                    ContentUris.withAppendedId(Contacts.CONTENT_URI, Long.valueOf(id)));
+                    ContentUris.withAppendedId(Contacts.CONTENT_URI, Long.parseLong(id)));
 
             Bitmap photo = inputStream != null ? BitmapFactory.decodeStream(inputStream) : null;
 

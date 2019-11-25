@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestRow extends RelativeLayout {
-    public ImageButton mbutton;
     List<ModelAction> actions = new ArrayList<>();
+
+    private ImageButton mButton;
     private ImageView mIcon;
     private TextView mTitle;
     private ProgressBar mProgress;
@@ -32,7 +33,7 @@ public class SuggestRow extends RelativeLayout {
 
         mDesc = findViewById(R.id.suggest_itemDesc);
 
-        mbutton = findViewById(R.id.suggest_itemMenuButton);
+        mButton = findViewById(R.id.suggest_itemMenuButton);
     }
 
     public void resetIcon() {

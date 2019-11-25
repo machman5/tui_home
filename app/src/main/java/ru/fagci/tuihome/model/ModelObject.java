@@ -16,12 +16,11 @@ import java.util.regex.Pattern;
 
 public abstract class ModelObject implements SortedListAdapter.ViewModel {
     private static int __id = 0;
-    private int _id;
 
     String uid;
     public final String name;
     private final String searchString;
-    protected long size = 0;
+    long size = 0;
 
     public long lastModified = 0;
     public int searchWeight = 100;
@@ -29,10 +28,9 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
     public Bitmap bitmap;
 
     public ModelObject(String name, String searchString) {
-        _id = __id++;
         this.name = name;
         this.searchString = searchString;
-        this.uid = getClass().getSimpleName() + ":" + _id;
+        this.uid = getClass().getSimpleName() + ":" + __id++;
     }
 
     public String getDescription() {
@@ -85,7 +83,7 @@ public abstract class ModelObject implements SortedListAdapter.ViewModel {
         return FileUtils.getReadableFileSize(size);
     }
 
-    public String getModifiedDate(Context c) {
+    public String getModifiedDate() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault());
         Date date = new Date(lastModified);
         return format.format(date);

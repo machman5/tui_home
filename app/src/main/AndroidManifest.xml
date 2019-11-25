@@ -37,16 +37,6 @@
 				android:resource="@xml/provider_paths" />
 		</provider>
 
-		<receiver android:name=".PackageChangedReceiver">
-			<intent-filter>
-				<action android:name="android.intent.action.PACKAGE_CHANGED" />
-				<action android:name="android.intent.action.PACKAGE_REPLACED" />
-				<action android:name="android.intent.action.PACKAGE_REMOVED" />
-
-				<data android:scheme="package" />
-			</intent-filter>
-		</receiver>
-
 	</application>
 
 </manifest>

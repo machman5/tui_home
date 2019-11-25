@@ -80,7 +80,7 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
         ((ViewHolder<T>) holder).bind(item);
     }
 
-    public final Editor<T> edit() {
+    final Editor<T> edit() {
         return new EditorImpl();
     }
 
@@ -93,7 +93,7 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
         return mSortedList.size();
     }
 
-    public final List<T> filter(Filter<T> filter) {
+    private List<T> filter(Filter<T> filter) {
         final List<T> list = new ArrayList<>();
         for (int i = 0, count = mSortedList.size(); i < count; i++) {
             final T item = mSortedList.get(i);
@@ -135,11 +135,11 @@ public abstract class SortedListAdapter<T extends SortedListAdapter.ViewModel>
 
         private T mCurrentItem;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
 
-        public final void bind(T item) {
+        final void bind(T item) {
             mCurrentItem = item;
             performBind(item);
         }
