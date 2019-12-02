@@ -27,7 +27,7 @@ public class AppLoaderTask extends ModelLoaderTask {
         for (ApplicationInfo info : pm.getInstalledApplications(0)) {
             if (isLoadInBackgroundCanceled()) break;
             if (pm.getLaunchIntentForPackage(info.packageName) == null) continue;
-            entries.add(new AppModel(info));
+            entries.add(new AppModel(info, pm));
         }
 
         return entries;

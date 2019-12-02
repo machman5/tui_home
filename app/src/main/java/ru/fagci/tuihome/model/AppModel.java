@@ -2,6 +2,7 @@ package ru.fagci.tuihome.model;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionRun;
@@ -15,8 +16,8 @@ import java.util.regex.Pattern;
 public class AppModel extends ModelObject {
     public ApplicationInfo appInfo;
 
-    public AppModel(ApplicationInfo appInfo) {
-        super(appInfo.loadLabel(AppLoaderTask.pm).toString(), appInfo.loadLabel(AppLoaderTask.pm).toString() + " " + appInfo.packageName);
+    public AppModel(ApplicationInfo appInfo, PackageManager pm) {
+        super(appInfo.loadLabel(pm).toString(), appInfo.loadLabel(pm).toString() + " " + appInfo.packageName);
         this.appInfo = appInfo;
 
         File file = new File(appInfo.publicSourceDir);

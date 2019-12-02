@@ -1,15 +1,13 @@
 package ru.fagci.tuihome;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import ru.fagci.tuihome.action.*;
+import ru.fagci.tuihome.databinding.ListItemBinding;
 import ru.fagci.tuihome.model.AppModel;
 import ru.fagci.tuihome.model.ContactModel;
 import ru.fagci.tuihome.model.MediaModel;
@@ -20,31 +18,22 @@ import java.util.List;
 
 
 public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
+    ListItemBinding binding;
+    View view;
 
-    private final View view;
-    private final ImageView icon;
-    private final TextView name;
-    private final TextView description;
-    private final TextView date;
-    private final TextView size;
+    CmdChainViewHolder(ListItemBinding binding) {
+        super(binding.getRoot());
+        view = binding.getRoot();
+        this.binding = binding;
+    }
 
-    CmdChainViewHolder(View v) {
-        super(v);
-        view = v;
-        icon = v.findViewById(R.id.cmd_chain_itemIcon);
-        name = v.findViewById(R.id.cmd_chain_itemName);
-        description = v.findViewById(R.id.cmd_chain_itemDescription);
-        date = v.findViewById(R.id.cmd_chain_itemDate);
-        size = v.findViewById(R.id.cmd_chain_itemSize);
+    public void bind(ModelObject employee) {
+        binding.setItem(employee);
+        binding.executePendingBindings();
     }
 
     protected void performBind(SortedListAdapter.ViewModel vm) {
         final ModelObject modelObject = (ModelObject) vm;
-        setIcon(modelObject.getBitmap(view.getContext()));
-        setText(modelObject.name);
-        setDescription(modelObject.getDescription());
-        setDate(modelObject.getModifiedDate(view.getContext()));
-        setSize(modelObject.getSize());
 
         setBgColor(getColorForModel(vm));
 
@@ -109,27 +98,6 @@ public class CmdChainViewHolder extends SortedListAdapter.ViewHolder {
         } else {
             return 0;
         }
-    }
-
-    private void setIcon(Bitmap b) {
-        icon.setImageBitmap(b);
-    }
-
-    private void setText(String t) {
-        name.setText(t);
-    }
-
-    private void setDescription(String t) {
-        description.setText(t);
-    }
-
-    private void setDate(String t) {
-        date.setText(t);
-    }
-
-
-    private void setSize(String t) {
-        size.setText(t);
     }
 
     private void setBgColor(int c) {

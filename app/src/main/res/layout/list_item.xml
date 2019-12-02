@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<data>
+
+		<variable
+			name="item"
+			type="ru.fagci.tuihome.model.ModelObject" />
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:id="@+id/cmd_chain_item"
+
+		android:layout_width="192dp"
+		android:layout_height="wrap_content"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp"
+		android:maxWidth="192dp"
+		android:background="@color/blue">
+
+		<ImageView
+			android:id="@+id/cmd_chain_itemIcon"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_marginVertical="4dp"
+			android:layout_marginHorizontal="8dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			android:contentDescription="TODO"
+			android:src="@{item.bitmap}" />
+
+
+		<TextView
+			android:id="@+id/cmd_chain_itemName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+
+			android:textSize="14sp"
+			android:singleLine="true"
+			android:ellipsize="marquee"
+			android:textStyle="bold"
+			android:layout_marginHorizontal="8dp"
+			app:layout_constraintStart_toEndOf="@id/cmd_chain_itemIcon"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			android:text="@{item.name}" />
+
+		<TextView
+			android:id="@+id/cmd_chain_itemDescription"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:textSize="12dp"
+			android:layout_marginHorizontal="8dp"
+			android:lines="2"
+			android:ellipsize="end"
+			app:layout_constraintStart_toEndOf="@id/cmd_chain_itemIcon"
+			app:layout_constraintTop_toBottomOf="@id/cmd_chain_itemName"
+			app:layout_constraintEnd_toEndOf="parent"
+			android:text="@{item.getDescription()}" />
+
+		<!--		<TextView-->
+		<!--			android:id="@+id/cmd_chain_itemDate"-->
+		<!--			android:layout_width="wrap_content"-->
+		<!--			android:layout_height="wrap_content"-->
+		<!--			android:textSize="10dp"-->
+		<!--			android:layout_marginHorizontal="8dp"-->
+		<!--			android:singleLine="true"-->
+		<!--			android:ellipsize="none"-->
+		<!--			app:layout_constraintBottom_toBottomOf="parent"-->
+		<!--			app:layout_constraintStart_toStartOf="parent"-->
+		<!--			app:layout_constraintTop_toBottomOf="@id/cmd_chain_itemDescription"-->
+		<!--			android:text="@{item.modifiedDate}" />-->
+
+		<TextView
+			android:id="@+id/cmd_chain_itemSize"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textSize="10dp"
+			android:layout_marginHorizontal="8dp"
+			android:singleLine="true"
+			android:ellipsize="none"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/cmd_chain_itemDescription"
+			android:text="@{item.getSize()}" />
+
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

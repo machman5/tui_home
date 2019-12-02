@@ -1,29 +1,39 @@
 package ru.fagci.tuihome;
 
-import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
+import ru.fagci.tuihome.databinding.ListItemBinding;
 import ru.fagci.tuihome.model.ModelObject;
 
-public class CmdChainAdapter extends SortedListAdapter<ModelObject> {
-    CmdChainAdapter(Context c) {
-        super(c, ModelObject.class, (p1, p2) -> p1.name.compareTo(p2.name));
+import java.util.LinkedList;
+import java.util.List;
+
+public class CmdChainAdapter extends RecyclerView.Adapter<CmdChainViewHolder> {
+    private List<ModelObject> items = new LinkedList<>();
+
+    @NonNull
+    @Override
+    public CmdChainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        ListItemBinding binding = DataBindingUtil.inflate(inflater, R.layout.list_item, parent, false);
+        return new CmdChainViewHolder(binding);
+    }
+
+    public void setData(List<ModelObject> data) {
+        items.clear();
+        items.addAll(data);
     }
 
     @Override
-    protected SortedListAdapter.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, int viewType) {
-        final View itemView = inflater.inflate(R.layout.cmd_chain_item, parent, false);
-        return new CmdChainViewHolder(itemView);
+    public void onBindViewHolder(@NonNull CmdChainViewHolder holder, int position) {
+        holder.bind(items.get(position));
     }
 
     @Override
-    protected boolean areItemsTheSame(ModelObject item1, ModelObject item2) {
-        return item1 == item2;
-    }
-
-    @Override
-    protected boolean areItemContentsTheSame(ModelObject oldItem, ModelObject newItem) {
-        return oldItem.hashCode() == newItem.hashCode();
+    public int getItemCount() {
+        return items.size();
     }
 }
