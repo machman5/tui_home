@@ -4,32 +4,22 @@ import android.os.Bundle;
 import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.neurenor.permissions.PermissionsHelper;
-import ru.fagci.tuihome.loader.AppLoaderTask;
-import ru.fagci.tuihome.loader.ContactLoaderTask;
-import ru.fagci.tuihome.loader.MediaLoaderTask;
 import ru.fagci.tuihome.model.ModelObject;
 import ru.fagci.tuihome.vm.AppViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
 
 import static android.Manifest.permission.*;
 
 public class MainActivity extends AppCompatActivity  {
-    private static final int LOADER_APPS = 1;
-    private static final int LOADER_CONTACTS = 2;
-    private static final int LOADER_MEDIA = 3;
 
     private static HashMap<String, Long> timing = new HashMap<>();
 

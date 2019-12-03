@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionRun;
-import ru.fagci.tuihome.loader.AppLoaderTask;
 import ru.fagci.tuihome.utils.GraphicsUtils;
 
 import java.io.File;
@@ -43,7 +42,7 @@ public class AppModel extends ModelObject {
     @Override
     public Bitmap createBitmap(Context context) {
         if (bitmap == null) {
-            bitmap = GraphicsUtils.getBitmapFromDrawable(appInfo.loadIcon(AppLoaderTask.pm));
+            bitmap = GraphicsUtils.getBitmapFromDrawable(appInfo.loadIcon(context.getPackageManager()));
         }
         return bitmap;
     }

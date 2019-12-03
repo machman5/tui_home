@@ -9,7 +9,7 @@ public abstract class ModelLoaderTask extends AsyncTaskLoader<List<?>> {
     protected Context context;
     private List<?> data;
 
-    ModelLoaderTask(Context context) {
+    protected ModelLoaderTask(Context context) {
         super(context);
         this.context = context;
     }
