@@ -2,7 +2,6 @@ package ru.fagci.tuihome.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import ru.fagci.tuihome.SortedListAdapter;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionShare;
 import ru.fagci.tuihome.utils.FileUtils;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public abstract class ModelObject implements SortedListAdapter.ViewModel {
+public abstract class ModelObject {
     private static int __id = 0;
 
     String uid;

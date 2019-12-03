@@ -5,10 +5,13 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.neurenor.permissions.PermissionsHelper;
+import ru.fagci.tuihome.decoration.SpacesItemDecoration;
+import ru.fagci.tuihome.model.AppModel;
 import ru.fagci.tuihome.model.ModelObject;
 import ru.fagci.tuihome.vm.AppViewModel;
 
@@ -72,21 +75,24 @@ public class MainActivity extends AppCompatActivity  {
 
 
 //        permissionHelper = new PermissionsHelper(this);
-//        permissionHelper.requestPermissions(permissions, p -> {
-//            for (String perm : p.keySet()) {
-//                PermissionsHelper.PermissionGrant g = p.get(perm);
-//                if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
-//                switch (perm) {
-//                    case Manifest.permission.READ_CONTACTS:
-//                        loaderManager.initLoader(LOADER_CONTACTS, null, MainActivity.this);
-//                        break;
-//                    case Manifest.permission.READ_EXTERNAL_STORAGE:
-//                        loaderManager.initLoader(LOADER_MEDIA, null, MainActivity.this);
-//                        break;
+//        permissionHelper.requestPermissions(permissions, new PermissionCallback() {
+//            @Override
+//            public void onResponseReceived(HashMap<String, PermissionsHelper.PermissionGrant> p) {
+//                for (String perm : p.keySet()) {
+//                    PermissionsHelper.PermissionGrant g = p.get(perm);
+//                    if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
+//                    switch (perm) {
+//                        case Manifest.permission.READ_CONTACTS:
+//                            loaderManager.initLoader(LOADER_CONTACTS, null, MainActivity.this);
+//                            break;
+//                        case Manifest.permission.READ_EXTERNAL_STORAGE:
+//                            loaderManager.initLoader(LOADER_MEDIA, null, MainActivity.this);
+//                            break;
+//                    }
 //                }
 //            }
 //        });
-
+//
 //        cmdLine.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String p1) {
@@ -103,8 +109,11 @@ public class MainActivity extends AppCompatActivity  {
 
 
         AppViewModel appModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        appModel.getData().observe(this, appModels -> {
-            cmdChainAdapter.setData(appModels);
+        appModel.getData().observe(this, new Observer<List<AppModel>>() {
+            @Override
+            public void onChanged(List<AppModel> appModels) {
+                cmdChainAdapter.setData(appModels);
+            }
         });
     }
 

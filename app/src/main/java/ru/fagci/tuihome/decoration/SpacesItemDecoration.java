@@ -1,4 +1,4 @@
-package ru.fagci.tuihome;
+package ru.fagci.tuihome.decoration;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     private final int space;
 
-    SpacesItemDecoration(int space) {
+    public SpacesItemDecoration(int space) {
         this.space = space;
     }
 
