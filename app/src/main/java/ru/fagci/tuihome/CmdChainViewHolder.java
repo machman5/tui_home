@@ -28,9 +28,10 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
-    public void bind(ModelObject employee) {
-        binding.setItem(employee);
+    public void bind(ModelObject vm) {
+        binding.setItem(vm);
         binding.executePendingBindings();
+        performBind(vm);
     }
 
     private static int getColorForModel(ModelObject vm) {
@@ -64,51 +65,48 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
         setBgColor(getColorForModel(vm));
 
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View p1) {
-                view.setBackgroundColor(Color.BLACK);
+        view.setOnClickListener(p1 -> {
+            view.setBackgroundColor(Color.BLACK);
 
-                final PopupMenu popupMenu = new PopupMenu(view.getContext(), p1);
+            final PopupMenu popupMenu = new PopupMenu(view.getContext(), p1);
 
-                try {
-                    Field mFieldPopup = popupMenu.getClass().getDeclaredField("mPopup");
-                    mFieldPopup.setAccessible(true);
-                    MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popupMenu);
-                    if (mPopup != null) {
-                        mPopup.setForceShowIcon(true);
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    e.printStackTrace();
+            try {
+                Field mFieldPopup = popupMenu.getClass().getDeclaredField("mPopup");
+                mFieldPopup.setAccessible(true);
+                MenuPopupHelper mPopup = (MenuPopupHelper) mFieldPopup.get(popupMenu);
+                if (mPopup != null) {
+                    mPopup.setForceShowIcon(true);
                 }
-
-                final Menu menu = popupMenu.getMenu();
-                final List<ModelAction> actionList = modelObject.getAvailableActions();
-                int menuItemId = 0;
-
-                for (ModelAction action : actionList) {
-                    MenuItem menuItem = menu.add(0, menuItemId++, 0, action.getName());
-                    menuItem.setIcon(CmdChainViewHolder.this.getIcon(action));
-                }
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem mItem) {
-                        ModelAction modelAction = actionList.get(mItem.getItemId());
-                        modelAction.execute(view.getContext(), modelObject);
-                        view.setBackgroundColor(getColorForModel(modelObject));
-                        return false;
-                    }
-                });
-                popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    @Override
-                    public void onDismiss(PopupMenu pMenu) {
-                        view.setBackgroundColor(getColorForModel(modelObject));
-                    }
-                });
-
-                popupMenu.show();
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
             }
+
+            final Menu menu = popupMenu.getMenu();
+            final List<ModelAction> actionList = modelObject.getAvailableActions();
+            int menuItemId = 0;
+
+            for (ModelAction action : actionList) {
+                MenuItem menuItem = menu.add(0, menuItemId++, 0, action.getName());
+                menuItem.setIcon(CmdChainViewHolder.this.getIcon(action));
+            }
+
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem mItem) {
+                    ModelAction modelAction = actionList.get(mItem.getItemId());
+                    modelAction.execute(view.getContext(), modelObject);
+                    view.setBackgroundColor(getColorForModel(modelObject));
+                    return false;
+                }
+            });
+            popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                @Override
+                public void onDismiss(PopupMenu pMenu) {
+                    view.setBackgroundColor(getColorForModel(modelObject));
+                }
+            });
+
+            popupMenu.show();
         });
     }
 
