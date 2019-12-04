@@ -2,5 +2,8 @@
 <resources>
 
     <string name="app_name">TUI_Home</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
+	<string name="permission_message">Allow access to sources to get better experience</string>
 
 </resources>
