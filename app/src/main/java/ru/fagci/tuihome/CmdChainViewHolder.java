@@ -28,22 +28,22 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
         this.binding = binding;
     }
 
-    public void bind(ModelObject vm) {
-        binding.setItem(vm);
-        binding.executePendingBindings();
-        performBind(vm);
-    }
-
-    private static int getColorForModel(ModelObject vm) {
-        if (vm instanceof AppModel) {
+    private static int getColorForModel(ModelObject modelObject) {
+        if (modelObject instanceof AppModel) {
             return Color.rgb(128, 80, 80);
-        } else if (vm instanceof ContactModel) {
+        } else if (modelObject instanceof ContactModel) {
             return Color.rgb(80, 128, 80);
-        } else if (vm instanceof MediaModel) {
+        } else if (modelObject instanceof MediaModel) {
             return Color.rgb(80, 80, 128);
         } else {
             return 0;
         }
+    }
+
+    public void bind(ModelObject modelObject) {
+        binding.setItem(modelObject);
+        binding.executePendingBindings();
+        performBind(modelObject);
     }
 
     private int getIcon(ModelAction action) {
@@ -59,10 +59,8 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
         return android.R.drawable.ic_menu_help;
     }
 
-    protected void performBind(ModelObject vm) {
-        final ModelObject modelObject = vm;
-
-        setBgColor(getColorForModel(vm));
+    private void performBind(ModelObject modelObject) {
+        setBgColor(getColorForModel(modelObject));
 
 
         view.setOnClickListener(p1 -> {
@@ -90,21 +88,13 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
                 menuItem.setIcon(CmdChainViewHolder.this.getIcon(action));
             }
 
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem mItem) {
-                    ModelAction modelAction = actionList.get(mItem.getItemId());
-                    modelAction.execute(view.getContext(), modelObject);
-                    view.setBackgroundColor(getColorForModel(modelObject));
-                    return false;
-                }
+            popupMenu.setOnMenuItemClickListener(mItem -> {
+                ModelAction modelAction = actionList.get(mItem.getItemId());
+                modelAction.execute(view.getContext(), modelObject);
+                view.setBackgroundColor(getColorForModel(modelObject));
+                return false;
             });
-            popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                @Override
-                public void onDismiss(PopupMenu pMenu) {
-                    view.setBackgroundColor(getColorForModel(modelObject));
-                }
-            });
+            popupMenu.setOnDismissListener(pMenu -> view.setBackgroundColor(getColorForModel(modelObject)));
 
             popupMenu.show();
         });
