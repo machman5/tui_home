@@ -2,6 +2,7 @@ package ru.fagci.tuihome.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import ru.fagci.tuihome.FilterState;
 import ru.fagci.tuihome.action.ModelAction;
 import ru.fagci.tuihome.action.ModelActionShare;
 import ru.fagci.tuihome.utils.FileUtils;
@@ -86,5 +87,9 @@ public abstract class ModelObject {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault());
         Date date = new Date(lastModified);
         return format.format(date);
+    }
+
+    public boolean search(FilterState input) {
+        return search(input.getQuery(), input.getPattern());
     }
 }

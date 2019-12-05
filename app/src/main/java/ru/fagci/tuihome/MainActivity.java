@@ -10,9 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.neurenor.permissions.PermissionsHelper;
 import ru.fagci.tuihome.decoration.SpacesItemDecoration;
-import ru.fagci.tuihome.vm.AppViewModel;
-import ru.fagci.tuihome.vm.ContactViewModel;
-import ru.fagci.tuihome.vm.MediaViewModel;
+import ru.fagci.tuihome.repository.AppRepository;
+import ru.fagci.tuihome.repository.ContactsRepository;
+import ru.fagci.tuihome.repository.MediaRepository;
+import ru.fagci.tuihome.vm.MergedViewModel;
+import ru.fagci.tuihome.vm.ModelViewModel;
+import ru.fagci.tuihome.vm.ViewModelFactory;
+
+import java.util.HashMap;
 
 import static android.Manifest.permission.*;
 
@@ -30,27 +35,18 @@ public class MainActivity extends AppCompatActivity {
     private CmdChainAdapter cmdChainAdapter;
     private PermissionsHelper permissionsHelper;
 
-    private AppViewModel appViewModel;
-    private ContactViewModel contactViewModel;
-    private MediaViewModel mediaViewModel;
+    private ModelViewModel appViewModel;
+    private ModelViewModel contactViewModel;
+    private ModelViewModel mediaViewModel;
 
-//    private void makeSearch(final String query) {
-//        Runnable r = new Runnable() {
-//            final ArrayList<ModelObject> filteredList = new ArrayList<>();
-//            final Pattern p = Pattern.compile(query, Pattern.CASE_INSENSITIVE);
-//
-//            @Override
-//            public void run() {
-//                for (final ModelObject item : modelObjects) {
-//                    if (item.search(query, p)) filteredList.add(item);
-//                }
-//                cmdChainAdapter.edit().replaceAll(filteredList).commit();
-//                cmdChain.scrollToPosition(0);
-//            }
-//        };
-//
-//        r.run();
-//    }
+    private MergedViewModel mergedViewModel;
+
+    private FilterState filter = new FilterState();
+
+    private void makeSearch(final String query) {
+        filter.setQuery(query);
+        appViewModel.filterModel(filter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,42 +67,25 @@ public class MainActivity extends AppCompatActivity {
         cmdChain.setAdapter(cmdChainAdapter);
         cmdChain.setNestedScrollingEnabled(false);
 
-
-        appViewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-
+        appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(ModelViewModel.class);
         appViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
 
         permissionsHelper = new PermissionsHelper(this);
-        permissionsHelper.requestPermissions(permissions, grants -> {
-            for (String perm : grants.keySet()) {
-                PermissionsHelper.PermissionGrant g = grants.get(perm);
-                if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
-                switch (perm) {
-                    case READ_CONTACTS:
-                        contactViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-                        contactViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
-                        break;
-                    case READ_EXTERNAL_STORAGE:
-                        mediaViewModel = ViewModelProviders.of(this).get(MediaViewModel.class);
-                        mediaViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
-                        break;
-                }
+        permissionsHelper.requestPermissions(permissions, this::onResponseReceived);
+
+        cmdLine.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String p1) {
+                // TODO: Implement this method
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String query) {
+                makeSearch(query);
+                return true;
             }
         });
-//
-//        cmdLine.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String p1) {
-//                // TODO: Implement this method
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(final String query) {
-//                makeSearch(query);
-//                return true;
-//            }
-//        });
 
 
     }
@@ -114,5 +93,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         permissionsHelper.onRequestPermissionsResult(permissions, grantResults);
+    }
+
+    private void onResponseReceived(HashMap<String, PermissionsHelper.PermissionGrant> grants) {
+        for (String perm : grants.keySet()) {
+            PermissionsHelper.PermissionGrant g = grants.get(perm);
+            if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
+            switch (perm) {
+                case READ_CONTACTS:
+                    contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ModelViewModel.class);
+                    mergedViewModel.addModel(contactViewModel);
+                    break;
+                case READ_EXTERNAL_STORAGE:
+                    mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(ModelViewModel.class);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + perm);
+            }
+        }
     }
 }

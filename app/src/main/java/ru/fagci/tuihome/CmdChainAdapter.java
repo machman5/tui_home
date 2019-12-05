@@ -25,6 +25,12 @@ public class CmdChainAdapter extends RecyclerView.Adapter<CmdChainViewHolder> {
     public void setData(List<? extends ModelObject> data) {
         items.clear();
         items.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<? extends ModelObject> data) {
+        items.addAll(data);
+        notifyDataSetChanged();
     }
 
     @Override

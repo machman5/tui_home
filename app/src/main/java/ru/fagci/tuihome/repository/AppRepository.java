@@ -7,23 +7,15 @@ import android.content.pm.PackageManager;
 import androidx.lifecycle.MutableLiveData;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 import ru.fagci.tuihome.model.AppModel;
-import ru.fagci.tuihome.receivers.PackageReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppRepository {
-    private MutableLiveData<List<AppModel>> apps;
-    private PackageReceiver receiver;
-
+public class AppRepository extends Repository {
     public AppRepository(Application context) {
-        apps = new MutableLiveData<>();
+        items = new MutableLiveData<>();
         AppLoaderTask task = new AppLoaderTask(context);
         task.loadInBackground();
-    }
-
-    public MutableLiveData<List<AppModel>> getApps() {
-        return apps;
     }
 
     class AppLoaderTask extends ModelLoaderTask {
@@ -41,7 +33,7 @@ public class AppRepository {
                 entries.add(new AppModel(info, pm));
             }
 
-            apps.postValue(entries);
+            items.postValue(entries);
 
             return entries;
         }

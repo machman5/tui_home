@@ -11,24 +11,16 @@ import android.provider.ContactsContract;
 import androidx.lifecycle.MutableLiveData;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 import ru.fagci.tuihome.model.ContactModel;
-import ru.fagci.tuihome.receivers.PackageReceiver;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsRepository {
-    private MutableLiveData<List<ContactModel>> contacts;
-    private PackageReceiver receiver;
-
+public class ContactsRepository extends Repository {
     public ContactsRepository(Application context) {
-        contacts = new MutableLiveData<>();
+        items = new MutableLiveData<>();
         ContactLoaderTask task = new ContactLoaderTask(context);
         task.loadInBackground();
-    }
-
-    public MutableLiveData<List<ContactModel>> getContacts() {
-        return contacts;
     }
 
     class ContactLoaderTask extends ModelLoaderTask {
@@ -76,7 +68,7 @@ public class ContactsRepository {
             }
 
             cursor.close();
-            contacts.postValue(entries);
+            items.postValue(entries);
             return entries;
         }
     }
