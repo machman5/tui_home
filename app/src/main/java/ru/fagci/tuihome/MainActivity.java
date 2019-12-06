@@ -35,17 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private CmdChainAdapter cmdChainAdapter;
     private PermissionsHelper permissionsHelper;
 
-    private ModelViewModel appViewModel;
-    private ModelViewModel contactViewModel;
-    private ModelViewModel mediaViewModel;
-
     private MergedViewModel mergedViewModel;
 
     private FilterState filter = new FilterState();
 
     private void makeSearch(final String query) {
         filter.setQuery(query);
-        appViewModel.filterModel(filter);
+        mergedViewModel.filterModel(filter);
     }
 
     @Override
@@ -67,11 +63,15 @@ public class MainActivity extends AppCompatActivity {
         cmdChain.setAdapter(cmdChainAdapter);
         cmdChain.setNestedScrollingEnabled(false);
 
-        appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(ModelViewModel.class);
-        appViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
+        mergedViewModel = ViewModelProviders.of(this).get(MergedViewModel.class);
+
+        ModelViewModel appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(ModelViewModel.class);
+        mergedViewModel.addModel(appViewModel);
 
         permissionsHelper = new PermissionsHelper(this);
         permissionsHelper.requestPermissions(permissions, this::onResponseReceived);
+
+        mergedViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
 
         cmdLine.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
 
     @Override
@@ -101,11 +99,12 @@ public class MainActivity extends AppCompatActivity {
             if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
             switch (perm) {
                 case READ_CONTACTS:
-                    contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ModelViewModel.class);
+                    ModelViewModel contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ModelViewModel.class);
                     mergedViewModel.addModel(contactViewModel);
                     break;
                 case READ_EXTERNAL_STORAGE:
-                    mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(ModelViewModel.class);
+                    ModelViewModel mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(ModelViewModel.class);
+                    mergedViewModel.addModel(mediaViewModel);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + perm);

@@ -4,6 +4,7 @@ import androidx.lifecycle.*;
 import ru.fagci.tuihome.FilterState;
 import ru.fagci.tuihome.model.ModelObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MergedViewModel extends ViewModel {
@@ -14,7 +15,18 @@ public class MergedViewModel extends ViewModel {
 
     public LiveData<List<? extends ModelObject>> getData() {
         return Transformations.map(_data, input -> {
-            return input;
+            FilterState filterState = modelFilter.getValue();
+            if (null == filterState) {
+                return input;
+            }
+            List<ModelObject> buffer = new ArrayList<>();
+            for (ModelObject item :
+                    input) {
+                if (item.search(filterState)) {
+                    buffer.add(item);
+                }
+            }
+            return buffer;
         });
     }
 
@@ -27,6 +39,8 @@ public class MergedViewModel extends ViewModel {
     }
 
     public void addModel(ModelViewModel viewModel) {
-        _data.addSource(viewModel.getData(),);
+        _data.addSource(viewModel.getData(), modelObjects -> {
+            _data.setValue(modelObjects);
+        });
     }
 }
