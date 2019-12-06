@@ -1,6 +1,7 @@
 package ru.fagci.tuihome;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -13,9 +14,7 @@ import ru.fagci.tuihome.decoration.SpacesItemDecoration;
 import ru.fagci.tuihome.repository.AppRepository;
 import ru.fagci.tuihome.repository.ContactsRepository;
 import ru.fagci.tuihome.repository.MediaRepository;
-import ru.fagci.tuihome.vm.MergedViewModel;
-import ru.fagci.tuihome.vm.ModelViewModel;
-import ru.fagci.tuihome.vm.ViewModelFactory;
+import ru.fagci.tuihome.vm.*;
 
 import java.util.HashMap;
 
@@ -65,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
 
         mergedViewModel = ViewModelProviders.of(this).get(MergedViewModel.class);
 
-        ModelViewModel appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(ModelViewModel.class);
-        mergedViewModel.addModel(appViewModel);
+        Log.i("LC", "Mounting Apps live data");
+        ModelViewModel appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(AppViewModel.class);
+        mergedViewModel.addDataSource(appViewModel.getData());
 
         permissionsHelper = new PermissionsHelper(this);
         permissionsHelper.requestPermissions(permissions, this::onResponseReceived);
@@ -94,20 +94,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onResponseReceived(HashMap<String, PermissionsHelper.PermissionGrant> grants) {
+        final String permissions = "Permissions";
         for (String perm : grants.keySet()) {
             PermissionsHelper.PermissionGrant g = grants.get(perm);
             if (g == null || !g.equals(PermissionsHelper.PermissionGrant.GRANTED)) continue;
             switch (perm) {
                 case READ_CONTACTS:
-                    ModelViewModel contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ModelViewModel.class);
-                    mergedViewModel.addModel(contactViewModel);
+                    Log.i(permissions, "Mounting Contacts live data with perm " + perm);
+                    ModelViewModel contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ContactViewModel.class);
+                    mergedViewModel.addDataSource(contactViewModel.getData());
                     break;
                 case READ_EXTERNAL_STORAGE:
-                    ModelViewModel mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(ModelViewModel.class);
-                    mergedViewModel.addModel(mediaViewModel);
+                    Log.i(permissions, "Mounting Internal storage live data with perm " + perm);
+                    ModelViewModel mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(MediaViewModel.class);
+                    mergedViewModel.addDataSource(mediaViewModel.getData());
                     break;
                 default:
-                    throw new IllegalStateException("Unexpected value: " + perm);
+                    Log.i(permissions, "Unexpected value: " + perm);
             }
         }
     }

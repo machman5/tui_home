@@ -1,5 +1,6 @@
 package ru.fagci.tuihome.vm;
 
+import android.util.Log;
 import androidx.lifecycle.*;
 import ru.fagci.tuihome.FilterState;
 import ru.fagci.tuihome.model.ModelObject;
@@ -8,13 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MergedViewModel extends ViewModel {
-    private MediatorLiveData<List<? extends ModelObject>> _data = new MediatorLiveData<>();
     private MediatorLiveData<List<? extends ModelObject>> data = new MediatorLiveData<>();
     MutableLiveData<FilterState> modelFilter = new MutableLiveData<>();
     private MutableLiveData<Boolean> isLoading;
 
     public LiveData<List<? extends ModelObject>> getData() {
-        return Transformations.map(_data, input -> {
+        return Transformations.map(data, input -> {
             FilterState filterState = modelFilter.getValue();
             if (null == filterState) {
                 return input;
@@ -38,9 +38,9 @@ public class MergedViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void addModel(ModelViewModel viewModel) {
-        _data.addSource(viewModel.getData(), modelObjects -> {
-            _data.setValue(modelObjects);
-        });
+    public void addDataSource(LiveData<List<? extends ModelObject>> source) {
+        data.removeSource(source);
+        data.addSource(source, modelObjects -> data.setValue(modelObjects));
+        Log.i("Merged VM", "Add source: " + source);
     }
 }
