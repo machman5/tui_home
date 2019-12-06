@@ -18,6 +18,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ModelViewModel.class)) {
             return (T) new ModelViewModel(repository);
         }
+        if (modelClass.isAssignableFrom(AppViewModel.class)) {
+            return (T) new AppViewModel(repository);
+        }
+        if (modelClass.isAssignableFrom(ContactViewModel.class)) {
+            return (T) new ContactViewModel(repository);
+        }
+        if (modelClass.isAssignableFrom(MediaViewModel.class)) {
+            return (T) new MediaViewModel(repository);
+        }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }
 }
