@@ -9,12 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
 import androidx.lifecycle.MutableLiveData;
+import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 import ru.fagci.tuihome.model.ContactModel;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContactsRepository extends Repository {
     public ContactsRepository(Application context) {
@@ -29,8 +28,8 @@ public class ContactsRepository extends Repository {
         }
 
         @Override
-        public List<ContactModel> loadInBackground() {
-            List<ContactModel> entries = new ArrayList<>();
+        public ModelObjectMap loadInBackground() {
+            ModelObjectMap entries = new ModelObjectMap();
 
             final ContentResolver contentResolver = context.getContentResolver();
 
@@ -61,7 +60,7 @@ public class ContactsRepository extends Repository {
 
                     if (null != photo) info.bitmap = Bitmap.createScaledBitmap(photo, 48, 48, false);
 
-                    entries.add(info);
+                    entries.put(info.getUid(), info);
                 }
 
                 cursorInfo.close();

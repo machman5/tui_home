@@ -22,14 +22,14 @@ public class CmdChainAdapter extends RecyclerView.Adapter<CmdChainViewHolder> {
         return new CmdChainViewHolder(binding);
     }
 
-    public void setData(List<? extends ModelObject> data) {
+    public void setData(ModelObjectMap data) {
         items.clear();
-        items.addAll(data);
+        items.addAll(data.values());
         notifyDataSetChanged();
     }
 
-    public void addData(List<? extends ModelObject> data) {
-        items.addAll(data);
+    public void addData(ModelObjectMap data) {
+        items.addAll(data.values());
         notifyDataSetChanged();
     }
 

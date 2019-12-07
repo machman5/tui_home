@@ -3,27 +3,27 @@ package ru.fagci.tuihome.vm;
 import android.util.Log;
 import androidx.lifecycle.*;
 import ru.fagci.tuihome.FilterState;
+import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.model.ModelObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class MergedViewModel extends ViewModel {
-    private MediatorLiveData<List<? extends ModelObject>> data = new MediatorLiveData<>();
     MutableLiveData<FilterState> modelFilter = new MutableLiveData<>();
+    ModelObjectMap items = new ModelObjectMap();
+    private MediatorLiveData<ModelObjectMap> data = new MediatorLiveData<>();
     private MutableLiveData<Boolean> isLoading;
 
-    public LiveData<List<? extends ModelObject>> getData() {
+    public LiveData<ModelObjectMap> getData() {
         return Transformations.map(data, input -> {
             FilterState filterState = modelFilter.getValue();
             if (null == filterState) {
                 return input;
             }
-            List<ModelObject> buffer = new ArrayList<>();
-            for (ModelObject item :
-                    input) {
-                if (item.search(filterState)) {
-                    buffer.add(item);
+            ModelObjectMap buffer = new ModelObjectMap();
+            for (Map.Entry<String, ModelObject> item : input.entrySet()) {
+                if (item.getValue().search(filterState)) {
+                    buffer.put(item.getKey(), item.getValue());
                 }
             }
             return buffer;
@@ -38,9 +38,12 @@ public class MergedViewModel extends ViewModel {
         return isLoading;
     }
 
-    public void addDataSource(LiveData<List<? extends ModelObject>> source) {
+    public void addDataSource(LiveData<ModelObjectMap> source) {
         data.removeSource(source);
-        data.addSource(source, modelObjects -> data.setValue(modelObjects));
+        data.addSource(source, modelObjects -> {
+            items.putAll(modelObjects);
+            data.setValue(items);
+        });
         Log.i("Merged VM", "Add source: " + source);
     }
 }

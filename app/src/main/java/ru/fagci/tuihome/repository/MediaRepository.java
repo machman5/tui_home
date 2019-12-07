@@ -5,16 +5,14 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.FileObserver;
 import androidx.lifecycle.MutableLiveData;
+import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.comparator.LastModifiedComparator;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 import ru.fagci.tuihome.model.MediaModel;
 import ru.fagci.tuihome.model.ModelObject;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 public class MediaRepository extends Repository {
     public MediaRepository(Application context) {
@@ -27,7 +25,7 @@ public class MediaRepository extends Repository {
         private final Comparator<ModelObject> comparator = new LastModifiedComparator();
         private File baseDirectory;
         private FileObserver fObserver;
-        private List<ModelObject> entries = new ArrayList<>();
+        private ModelObjectMap entries = new ModelObjectMap();
 
         MediaLoaderTask(Context context) {
             super(context);
@@ -51,15 +49,15 @@ public class MediaRepository extends Repository {
         }
 
         @Override
-        public List<ModelObject> loadInBackground() {
+        public ModelObjectMap loadInBackground() {
             entries.clear(); // TODO: сделать кэширование
             walkDir(baseDirectory, entries);
-            Collections.sort(entries, comparator);
+//            Collections.sort(entries, comparator); // TODO: кто сортирует?
             items.postValue(entries);
             return entries;
         }
 
-        private void walkDir(File dir, List<ModelObject> items) {
+        private void walkDir(File dir, ModelObjectMap items) {
             if (dir == null || dir.length() == 0) return;
             final File[] files = dir.listFiles();
             if (files == null) return;
@@ -71,7 +69,8 @@ public class MediaRepository extends Repository {
                     walkDir(f, items);
                     continue;
                 }
-                items.add(new MediaModel(f));
+                MediaModel mediaModel = new MediaModel(f);
+                items.put(mediaModel.getUid(), mediaModel);
             }
         }
 

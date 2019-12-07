@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import androidx.lifecycle.MutableLiveData;
+import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 import ru.fagci.tuihome.model.AppModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AppRepository extends Repository {
     public AppRepository(Application context) {
@@ -24,13 +22,14 @@ public class AppRepository extends Repository {
         }
 
         @Override
-        public List<AppModel> loadInBackground() {
+        public ModelObjectMap loadInBackground() {
             PackageManager pm = context.getPackageManager();
-            List<AppModel> entries = new ArrayList<>();
+            ModelObjectMap entries = new ModelObjectMap();
             for (ApplicationInfo info : pm.getInstalledApplications(0)) {
                 if (isLoadInBackgroundCanceled()) break;
                 if (pm.getLaunchIntentForPackage(info.packageName) == null) continue;
-                entries.add(new AppModel(info, pm));
+                AppModel model = new AppModel(info, pm);
+                entries.put(model.getUid(), model);
             }
 
             items.postValue(entries);

@@ -16,16 +16,13 @@ import java.util.regex.Pattern;
 
 public abstract class ModelObject {
     private static int __id = 0;
-
-    String uid;
     public final String name;
     private final String searchString;
-    long size = 0;
-
     public long lastModified = 0;
     public int searchWeight = 100;
-
     public Bitmap bitmap;
+    String uid;
+    long size = 0;
 
     public ModelObject(String name, String searchString) {
         this.name = name;
@@ -91,5 +88,9 @@ public abstract class ModelObject {
 
     public boolean search(FilterState input) {
         return search(input.getQuery(), input.getPattern());
+    }
+
+    public String getUid() {
+        return uid;
     }
 }

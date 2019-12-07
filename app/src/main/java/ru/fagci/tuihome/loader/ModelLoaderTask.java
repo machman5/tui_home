@@ -3,11 +3,11 @@ package ru.fagci.tuihome.loader;
 import android.content.Context;
 import androidx.loader.content.AsyncTaskLoader;
 
-import java.util.List;
+import java.util.HashMap;
 
-public abstract class ModelLoaderTask extends AsyncTaskLoader<List<?>> {
+public abstract class ModelLoaderTask extends AsyncTaskLoader<HashMap<String, ?>> {
     protected Context context;
-    private List<?> data;
+    private HashMap<String, ?> data;
 
     protected ModelLoaderTask(Context context) {
         super(context);
@@ -15,7 +15,7 @@ public abstract class ModelLoaderTask extends AsyncTaskLoader<List<?>> {
     }
 
     @Override
-    public void deliverResult(List<?> items) {
+    public void deliverResult(HashMap<String, ?> items) {
         data = items;
 
         if (isStarted()) {
