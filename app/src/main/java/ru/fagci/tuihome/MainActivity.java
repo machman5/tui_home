@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private void makeSearch(final String query) {
         filter.setQuery(query);
         mergedViewModel.filterModel(filter);
+        mergedViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
+
     }
 
     @Override
