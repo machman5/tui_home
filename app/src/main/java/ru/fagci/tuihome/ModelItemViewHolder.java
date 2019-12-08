@@ -8,21 +8,22 @@ import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.fagci.tuihome.action.*;
-import ru.fagci.tuihome.databinding.ListItemBinding;
+import ru.fagci.tuihome.databinding.ListModelItemBinding;
 import ru.fagci.tuihome.model.AppModel;
 import ru.fagci.tuihome.model.ContactModel;
 import ru.fagci.tuihome.model.MediaModel;
 import ru.fagci.tuihome.model.ModelObject;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 
 
-public class CmdChainViewHolder extends RecyclerView.ViewHolder {
-    ListItemBinding binding;
+public class ModelItemViewHolder extends RecyclerView.ViewHolder {
+    ListModelItemBinding binding;
     View view;
 
-    CmdChainViewHolder(ListItemBinding binding) {
+    ModelItemViewHolder(ListModelItemBinding binding) {
         super(binding.getRoot());
         view = binding.getRoot();
         this.binding = binding;
@@ -55,6 +56,8 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
             return android.R.drawable.ic_media_play;
         } else if (action instanceof ModelActionShare) {
             return android.R.drawable.ic_menu_share;
+        } else if (action instanceof ModelActionInfo) {
+            return android.R.drawable.ic_menu_info_details;
         }
         return android.R.drawable.ic_menu_help;
     }
@@ -82,10 +85,10 @@ public class CmdChainViewHolder extends RecyclerView.ViewHolder {
             final Menu menu = popupMenu.getMenu();
             final List<ModelAction> actionList = modelObject.getAvailableActions();
             int menuItemId = 0;
-
+            Collections.reverse(actionList);
             for (ModelAction action : actionList) {
                 MenuItem menuItem = menu.add(0, menuItemId++, 0, action.getName());
-                menuItem.setIcon(CmdChainViewHolder.this.getIcon(action));
+                menuItem.setIcon(ModelItemViewHolder.this.getIcon(action));
             }
 
             popupMenu.setOnMenuItemClickListener(mItem -> {

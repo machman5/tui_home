@@ -14,6 +14,7 @@ public class ModelViewModel extends ViewModel {
     public ModelViewModel(Repository repository) {
         super();
         this.repository = repository;
+        isLoading = repository.getIsLoading();
     }
 
     public LiveData<ModelObjectMap> getData() {
@@ -25,5 +26,9 @@ public class ModelViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getIsLoading() {
         return isLoading;
+    }
+
+    public String getName() {
+        return getClass().getSimpleName();
     }
 }

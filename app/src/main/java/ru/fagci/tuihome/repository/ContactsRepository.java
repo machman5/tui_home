@@ -3,11 +3,12 @@ package ru.fagci.tuihome.repository;
 import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.ContactsContract;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import androidx.lifecycle.MutableLiveData;
 import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
@@ -17,28 +18,29 @@ import java.io.InputStream;
 
 public class ContactsRepository extends Repository {
     public ContactsRepository(Application context) {
-        items = new MutableLiveData<>();
-        ContactLoaderTask task = new ContactLoaderTask(context);
-        task.loadInBackground();
+        super();
+        task = new ContactLoaderTask(context, items, isLoading);
     }
 
-    class ContactLoaderTask extends ModelLoaderTask {
-        ContactLoaderTask(Context context) {
-            super(context);
+    static class ContactLoaderTask extends ModelLoaderTask {
+
+        ContactLoaderTask(@NonNull Application application, @NonNull MutableLiveData<ModelObjectMap> liveData, @NonNull MutableLiveData<Boolean> isLoading) {
+            super(application, liveData, isLoading);
         }
 
         @Override
-        public ModelObjectMap loadInBackground() {
+        @WorkerThread
+        protected ModelObjectMap doInBackground(Void... voids) {
             ModelObjectMap entries = new ModelObjectMap();
 
-            final ContentResolver contentResolver = context.getContentResolver();
+            final ContentResolver contentResolver = getContext().getContentResolver();
 
             Cursor cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
             if (cursor == null || cursor.getCount() == 0) return entries;
 
             while (cursor.moveToNext()) {
-                if (isLoadInBackgroundCanceled()) break;
+                if (isCancelled()) break;
                 if (cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) == 0) continue;
 
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
@@ -67,7 +69,6 @@ public class ContactsRepository extends Repository {
             }
 
             cursor.close();
-            items.postValue(entries);
             return entries;
         }
     }

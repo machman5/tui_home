@@ -9,14 +9,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.neurenor.permissions.PermissionsHelper;
 import ru.fagci.tuihome.decoration.SpacesItemDecoration;
+import ru.fagci.tuihome.model.ModelObject;
 import ru.fagci.tuihome.repository.AppRepository;
 import ru.fagci.tuihome.repository.ContactsRepository;
 import ru.fagci.tuihome.repository.MediaRepository;
 import ru.fagci.tuihome.vm.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static android.Manifest.permission.*;
 
@@ -30,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private TextView output;
-    private RecyclerView cmdChain;
-    private CmdChainAdapter cmdChainAdapter;
+    private RecyclerView modelListView;
+    private RecyclerView modelCategoryListView;
+    private ModelListAdapter modelListAdapter;
+    private ModelCategoryListAdapter modelCategoryListAdapter;
     private PermissionsHelper permissionsHelper;
 
     private MergedViewModel mergedViewModel;
@@ -41,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private void makeSearch(final String query) {
         filter.setQuery(query);
         mergedViewModel.filterModel(filter);
-        mergedViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
-
+        mergedViewModel.getData().observe(this, this::updateModelListItems);
     }
 
     @Override
@@ -50,30 +55,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        modelListAdapter = new ModelListAdapter();
+        modelCategoryListAdapter = new ModelCategoryListAdapter();
+
         SearchView cmdLine = findViewById(R.id.cmdline);
         output = findViewById(R.id.output);
-        cmdChain = findViewById(R.id.main_commandsChain);
+        modelListView = findViewById(R.id.main_commandsChain);
+        modelCategoryListView = findViewById(R.id.main_modelCategorySwitcher);
 
         cmdLine.setIconifiedByDefault(false);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
 
-        cmdChain.addItemDecoration(new SpacesItemDecoration(8));
-        cmdChain.setLayoutManager(layoutManager);
-        cmdChainAdapter = new CmdChainAdapter();
-        cmdChain.setAdapter(cmdChainAdapter);
-        cmdChain.setNestedScrollingEnabled(false);
+        modelListView.addItemDecoration(new SpacesItemDecoration(8));
+        modelListView.setLayoutManager(layoutManager);
+
+
+        modelListView.setAdapter(modelListAdapter);
+        modelListView.setNestedScrollingEnabled(false);
+
+        modelCategoryListView.setAdapter(modelCategoryListAdapter);
+        RecyclerView.LayoutManager linearLayoutManager = new StaggeredGridLayoutManager(1, RecyclerView.HORIZONTAL);
+        modelCategoryListView.setLayoutManager(linearLayoutManager);
 
         mergedViewModel = ViewModelProviders.of(this).get(MergedViewModel.class);
 
         Log.i("LC", "Mounting Apps live data");
         ModelViewModel appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(AppViewModel.class);
+        modelCategoryListAdapter.addItem(appViewModel);
+        appViewModel.getIsLoading().observe(this, isLoading -> {
+            output.append("App loading " + (isLoading ? "started" : "finished") + " \n");
+        });
         mergedViewModel.addDataSource(appViewModel.getData());
+
 
         permissionsHelper = new PermissionsHelper(this);
         permissionsHelper.requestPermissions(permissions, this::onResponseReceived);
 
-        mergedViewModel.getData().observe(this, models -> cmdChainAdapter.setData(models));
+        mergedViewModel.getData().observe(this, this::updateModelListItems);
 
         cmdLine.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -90,6 +109,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateModelListItems(ModelObjectMap models) {
+//        List<ModelObject> oldItems = modelListAdapter.getItems();
+        List<ModelObject> newItems = new ArrayList<>(models.values());
+        Log.i("ADAPTER", "Set data start");
+//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ModelListAdapter.DiffCallback(oldItems, newItems));
+        Log.i("ADAPTER", "Set data diff calculated");
+        modelListAdapter.setData(newItems);
+        Log.i("ADAPTER", "Set data add all");
+//        diffResult.dispatchUpdatesTo(modelListAdapter);
+        modelListAdapter.notifyDataSetChanged();
+        Log.i("ADAPTER", "Set data end");
+    }
+
     @Override
     public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         permissionsHelper.onRequestPermissionsResult(permissions, grantResults);
@@ -104,11 +136,13 @@ public class MainActivity extends AppCompatActivity {
                 case READ_CONTACTS:
                     Log.i(permissions, "Mounting Contacts live data with perm " + perm);
                     ModelViewModel contactViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ContactsRepository(getApplication()))).get(ContactViewModel.class);
+                    modelCategoryListAdapter.addItem(contactViewModel);
                     mergedViewModel.addDataSource(contactViewModel.getData());
                     break;
                 case READ_EXTERNAL_STORAGE:
                     Log.i(permissions, "Mounting Internal storage live data with perm " + perm);
                     ModelViewModel mediaViewModel = ViewModelProviders.of(this, new ViewModelFactory(new MediaRepository(getApplication()))).get(MediaViewModel.class);
+                    modelCategoryListAdapter.addItem(mediaViewModel);
                     mergedViewModel.addDataSource(mediaViewModel.getData());
                     break;
                 default:

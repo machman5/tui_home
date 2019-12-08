@@ -2,8 +2,13 @@ package ru.fagci.tuihome.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.text.Html;
+import android.text.Spanned;
+import androidx.core.text.HtmlCompat;
 import ru.fagci.tuihome.FilterState;
 import ru.fagci.tuihome.action.ModelAction;
+import ru.fagci.tuihome.action.ModelActionInfo;
 import ru.fagci.tuihome.action.ModelActionShare;
 import ru.fagci.tuihome.utils.FileUtils;
 
@@ -72,6 +77,7 @@ public abstract class ModelObject {
 
     public List<ModelAction> getAvailableActions() {
         final List<ModelAction> aa = new ArrayList<>();
+        aa.add(new ModelActionInfo());
         aa.add(new ModelActionShare());
         return aa;
     }
@@ -92,5 +98,20 @@ public abstract class ModelObject {
 
     public String getUid() {
         return uid;
+    }
+
+    @SuppressWarnings("deprecation")
+    public Spanned getInfoHtml() {
+        String info = "";
+        info += "<b>UID:</b> " + uid + "<br>";
+        info += "<b>Name:</b> " + name + "<br>";
+        info += "<b>Search string:</b> " + searchString + "<br>";
+        info += "<b>Search weight:</b> " + searchWeight + "<br>";
+        info += "<b>Last modified:</b> " + getModifiedDate() + "<br>";
+        info += "<b>Size:</b> " + getSize() + "<br>";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY);
+        }
+        return Html.fromHtml(info);
     }
 }

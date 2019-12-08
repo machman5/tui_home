@@ -1,5 +1,6 @@
 package ru.fagci.tuihome.vm;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import androidx.lifecycle.*;
 import ru.fagci.tuihome.FilterState;
@@ -9,10 +10,8 @@ import ru.fagci.tuihome.model.ModelObject;
 import java.util.Map;
 
 public class MergedViewModel extends ViewModel {
-    MutableLiveData<FilterState> modelFilter = new MutableLiveData<>();
-    ModelObjectMap items = new ModelObjectMap();
+    private MutableLiveData<FilterState> modelFilter = new MutableLiveData<>();
     private MediatorLiveData<ModelObjectMap> data = new MediatorLiveData<>();
-    private MutableLiveData<Boolean> isLoading;
 
     public LiveData<ModelObjectMap> getData() {
         return Transformations.map(data, input -> {
@@ -34,16 +33,41 @@ public class MergedViewModel extends ViewModel {
         modelFilter.postValue(filterState);
     }
 
-    public MutableLiveData<Boolean> getIsLoading() {
-        return isLoading;
-    }
-
     public void addDataSource(LiveData<ModelObjectMap> source) {
-        data.removeSource(source);
         data.addSource(source, modelObjects -> {
-            items.putAll(modelObjects);
-            data.setValue(items);
+//            new AddDataSourceAsyncTask(data).execute(modelObjects);
+            ModelObjectMap oldData = data.getValue();
+            if (oldData == null) {
+                data.postValue(modelObjects);
+            } else {
+                oldData.putAll(modelObjects);
+                data.postValue(oldData);
+            }
+
         });
         Log.i("Merged VM", "Add source: " + source);
+    }
+
+    static class AddDataSourceAsyncTask extends AsyncTask<ModelObjectMap, Void, ModelObjectMap> {
+        MutableLiveData<ModelObjectMap> liveData;
+
+        AddDataSourceAsyncTask(MutableLiveData<ModelObjectMap> liveData) {
+            this.liveData = liveData;
+        }
+
+        @Override
+        protected ModelObjectMap doInBackground(ModelObjectMap... modelObjectMaps) {
+            ModelObjectMap objectMap = liveData.getValue();
+            if (objectMap != null) {
+                objectMap.putAll(modelObjectMaps[0]);
+                return objectMap;
+            }
+            return modelObjectMaps[0];
+        }
+
+        @Override
+        protected void onPostExecute(ModelObjectMap modelObjectMap) {
+            liveData.postValue(modelObjectMap);
+        }
     }
 }
