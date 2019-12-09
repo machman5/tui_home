@@ -3,8 +3,8 @@ package ru.fagci.tuihome;
 import java.util.regex.Pattern;
 
 public class FilterState {
-    String query;
-    Pattern pattern;
+    private String query;
+    private Pattern pattern;
 
     public String getQuery() {
         return query;
@@ -18,6 +18,4 @@ public class FilterState {
     public Pattern getPattern() {
         return pattern;
     }
-
-
 }

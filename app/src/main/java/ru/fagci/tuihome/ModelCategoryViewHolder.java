@@ -15,7 +15,7 @@ public class ModelCategoryViewHolder extends RecyclerView.ViewHolder {
     private ListModelCategoryItemBinding binding;
     private View view;
 
-    ModelCategoryViewHolder(ListModelCategoryItemBinding binding) {
+    public ModelCategoryViewHolder(ListModelCategoryItemBinding binding) {
         super(binding.getRoot());
         view = binding.getRoot();
         this.binding = binding;

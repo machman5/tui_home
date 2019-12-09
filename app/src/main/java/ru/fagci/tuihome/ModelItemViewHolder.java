@@ -20,10 +20,10 @@ import java.util.List;
 
 
 public class ModelItemViewHolder extends RecyclerView.ViewHolder {
-    ListModelItemBinding binding;
-    View view;
+    private ListModelItemBinding binding;
+    private View view;
 
-    ModelItemViewHolder(ListModelItemBinding binding) {
+    public ModelItemViewHolder(ListModelItemBinding binding) {
         super(binding.getRoot());
         view = binding.getRoot();
         this.binding = binding;

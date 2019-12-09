@@ -2,9 +2,7 @@ package ru.fagci.tuihome;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.widget.SearchView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -12,8 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.neurenor.permissions.PermissionsHelper;
+import ru.fagci.tuihome.adapters.ModelCategoryListAdapter;
+import ru.fagci.tuihome.adapters.ModelListAdapter;
 import ru.fagci.tuihome.decoration.SpacesItemDecoration;
-import ru.fagci.tuihome.model.ModelObject;
 import ru.fagci.tuihome.repository.AppRepository;
 import ru.fagci.tuihome.repository.ContactsRepository;
 import ru.fagci.tuihome.repository.MediaRepository;
@@ -21,7 +20,6 @@ import ru.fagci.tuihome.vm.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static android.Manifest.permission.*;
 
@@ -34,9 +32,6 @@ public class MainActivity extends AppCompatActivity {
             WRITE_EXTERNAL_STORAGE
     };
 
-    private TextView output;
-    private RecyclerView modelListView;
-    private RecyclerView modelCategoryListView;
     private ModelListAdapter modelListAdapter;
     private ModelCategoryListAdapter modelCategoryListAdapter;
     private PermissionsHelper permissionsHelper;
@@ -60,13 +55,12 @@ public class MainActivity extends AppCompatActivity {
         modelCategoryListAdapter = new ModelCategoryListAdapter();
 
         SearchView cmdLine = findViewById(R.id.cmdline);
-        output = findViewById(R.id.output);
-        modelListView = findViewById(R.id.main_commandsChain);
-        modelCategoryListView = findViewById(R.id.main_modelCategorySwitcher);
+        RecyclerView modelListView = findViewById(R.id.main_commandsChain);
+        RecyclerView modelCategoryListView = findViewById(R.id.main_modelCategorySwitcher);
 
         cmdLine.setIconifiedByDefault(false);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 4, RecyclerView.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1, RecyclerView.VERTICAL, false);
 
         modelListView.addItemDecoration(new SpacesItemDecoration(8));
         modelListView.setLayoutManager(layoutManager);
@@ -84,11 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("LC", "Mounting Apps live data");
         ModelViewModel appViewModel = ViewModelProviders.of(this, new ViewModelFactory(new AppRepository(getApplication()))).get(AppViewModel.class);
         modelCategoryListAdapter.addItem(appViewModel);
-        appViewModel.getIsLoading().observe(this, isLoading -> {
-            output.append("App loading " + (isLoading ? "started" : "finished") + " \n");
-        });
         mergedViewModel.addDataSource(appViewModel.getData());
-
 
         permissionsHelper = new PermissionsHelper(this);
         permissionsHelper.requestPermissions(permissions, this::onResponseReceived);
@@ -111,20 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateModelListItems(ModelObjectMap models) {
-        TimingLogger timingLogger = new TimingLogger("AsyncTask", "Instance: " + models.values().iterator().next().getClass().getSimpleName());
-        timingLogger.addSplit("start");
-//        List<ModelObject> oldItems = modelListAdapter.getItems();
-        List<ModelObject> newItems = new ArrayList<>(models.values());
-        Log.i("ADAPTER", "Set data start");
-//        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ModelListAdapter.DiffCallback(oldItems, newItems));
-        Log.i("ADAPTER", "Set data diff calculated");
-        modelListAdapter.setData(newItems);
-        Log.i("ADAPTER", "Set data add all");
-//        diffResult.dispatchUpdatesTo(modelListAdapter);
-        modelListAdapter.notifyDataSetChanged();
-        Log.i("ADAPTER", "Set data end");
-        timingLogger.addSplit("end");
-        timingLogger.dumpToLog();
+        modelListAdapter.setData(new ArrayList<>(models.values()));
     }
 
     @Override

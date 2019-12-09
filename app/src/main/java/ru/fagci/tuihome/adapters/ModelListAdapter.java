@@ -1,11 +1,16 @@
-package ru.fagci.tuihome;
+package ru.fagci.tuihome.adapters;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import ru.fagci.tuihome.DiffCallback;
+import ru.fagci.tuihome.ModelItemViewHolder;
+import ru.fagci.tuihome.R;
 import ru.fagci.tuihome.databinding.ListModelItemBinding;
 import ru.fagci.tuihome.model.ModelObject;
 
@@ -23,48 +28,21 @@ public class ModelListAdapter extends RecyclerView.Adapter<ModelItemViewHolder> 
         return new ModelItemViewHolder(binding);
     }
 
+    @MainThread
     public void setData(List<ModelObject> newItems) {
-        items.clear();
-        items.addAll(newItems);
-    }
-
-    public List<ModelObject> getItems() {
-        return items;
+        final Handler handler = new Handler();
+        new Thread(() -> {
+            final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffCallback(items, newItems));
+            handler.post(() -> {
+                items = newItems;
+                diffResult.dispatchUpdatesTo(ModelListAdapter.this);
+            });
+        }).start();
     }
 
     @Override
     public void onBindViewHolder(@NonNull ModelItemViewHolder holder, int position) {
         holder.bind(items.get(position));
-    }
-
-    static class DiffCallback extends DiffUtil.Callback {
-        private final List<ModelObject> oldItems;
-        private final List<ModelObject> newItems;
-
-        DiffCallback(List<ModelObject> oldItems, List<ModelObject> newItems) {
-            this.oldItems = oldItems;
-            this.newItems = newItems;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return oldItems.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return newItems.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldItems.get(oldItemPosition).getUid() == newItems.get(newItemPosition).getUid();
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            return oldItems.get(oldItemPosition).name == newItems.get(newItemPosition).name;
-        }
     }
 
     @Override

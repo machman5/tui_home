@@ -1,6 +1,5 @@
 package ru.fagci.tuihome.vm;
 
-import android.os.AsyncTask;
 import android.util.Log;
 import androidx.lifecycle.*;
 import ru.fagci.tuihome.FilterState;
@@ -46,28 +45,5 @@ public class MergedViewModel extends ViewModel {
 
         });
         Log.i("Merged VM", "Add source: " + source);
-    }
-
-    static class AddDataSourceAsyncTask extends AsyncTask<ModelObjectMap, Void, ModelObjectMap> {
-        MutableLiveData<ModelObjectMap> liveData;
-
-        AddDataSourceAsyncTask(MutableLiveData<ModelObjectMap> liveData) {
-            this.liveData = liveData;
-        }
-
-        @Override
-        protected ModelObjectMap doInBackground(ModelObjectMap... modelObjectMaps) {
-            ModelObjectMap objectMap = liveData.getValue();
-            if (objectMap != null) {
-                objectMap.putAll(modelObjectMaps[0]);
-                return objectMap;
-            }
-            return modelObjectMaps[0];
-        }
-
-        @Override
-        protected void onPostExecute(ModelObjectMap modelObjectMap) {
-            liveData.postValue(modelObjectMap);
-        }
     }
 }

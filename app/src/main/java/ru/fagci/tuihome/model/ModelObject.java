@@ -25,7 +25,7 @@ public abstract class ModelObject {
     private final String searchString;
     public long lastModified = 0;
     public int searchWeight = 100;
-    public Bitmap bitmap;
+    Bitmap bitmap;
     String uid;
     long size = 0;
 

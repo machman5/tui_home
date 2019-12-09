@@ -5,7 +5,7 @@ import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.loader.ModelLoaderTask;
 
 public class Repository {
-    protected MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+    MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     ModelLoaderTask task;
     MutableLiveData<ModelObjectMap> items = new MutableLiveData<>();
     private boolean isLoadInitiated = false;

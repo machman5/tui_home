@@ -1,10 +1,12 @@
-package ru.fagci.tuihome;
+package ru.fagci.tuihome.adapters;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import ru.fagci.tuihome.ModelCategoryViewHolder;
+import ru.fagci.tuihome.R;
 import ru.fagci.tuihome.databinding.ListModelCategoryItemBinding;
 import ru.fagci.tuihome.vm.ModelViewModel;
 
