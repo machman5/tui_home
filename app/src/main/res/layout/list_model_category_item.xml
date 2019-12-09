@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp">
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp">
 
-        <!--		<ImageView-->
-        <!--			android:id="@+id/cmd_chain_itemIcon"-->
-        <!--			android:layout_width="32dp"-->
-        <!--			android:layout_height="32dp"-->
-        <!--			android:layout_marginTop="4dp"-->
-        <!--			android:layout_marginBottom="4dp"-->
-        <!--			android:layout_marginLeft="8dp"-->
-        <!--			android:layout_marginRight="8dp"-->
-        <!--			app:layout_constraintStart_toStartOf="parent"-->
-        <!--			app:layout_constraintTop_toTopOf="parent"-->
-        <!--			android:src="@{item.isLoading}" />-->
-        <Switch
-            android:id="@+id/model_category_sw"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
-            android:checked="@={item.getIsLoading()}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+		<ImageView
+			android:id="@+id/cmd_chain_itemIcon"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginRight="8dp"
+			android:layout_marginBottom="4dp"
+			android:maxWidth="32dp"
+			android:maxHeight="32dp"
+			android:src="@{item.getIcon()}"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{item.getName()}"
-            app:layout_constraintStart_toEndOf="@id/model_category_sw"
-            app:layout_constraintTop_toTopOf="parent" />
+		<ProgressBar
+			android:id="@+id/model_category_sw"
+			android:layout_width="32dp"
+			android:layout_height="32dp"
+			android:layout_marginLeft="8dp"
+			android:layout_marginTop="4dp"
+			android:layout_marginRight="8dp"
+			android:layout_marginBottom="4dp"
+			android:maxWidth="32dp"
+			android:maxHeight="32dp"
+			android:visibility="@{item.getIsLoading()?v.VISIBLE:v.GONE}"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
-    <data>
+	<data>
 
-        <variable
-            name="item"
-            type="ru.fagci.tuihome.vm.ModelViewModel" />
-    </data>
+		<import
+			alias="v"
+			type="android.view.View" />
+
+		<variable
+			name="item"
+			type="ru.fagci.tuihome.vm.ModelViewModel" />
+	</data>
 </layout>

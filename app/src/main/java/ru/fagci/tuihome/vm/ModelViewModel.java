@@ -7,6 +7,11 @@ import ru.fagci.tuihome.ModelObjectMap;
 import ru.fagci.tuihome.repository.Repository;
 
 public class ModelViewModel extends ViewModel {
+    int icon = android.R.drawable.ic_menu_help;
+
+    public int getIcon() {
+        return icon;
+    }
     private MutableLiveData<ModelObjectMap> data;
     private MutableLiveData<Boolean> isLoading;
     private Repository repository;

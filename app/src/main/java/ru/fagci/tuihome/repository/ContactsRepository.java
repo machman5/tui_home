@@ -56,11 +56,9 @@ public class ContactsRepository extends Repository {
                 if (cursorInfo == null) continue;
 
                 while (cursorInfo.moveToNext()) {
-
                     String number = cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    info.addContact(number);
-
-
+                    String normalizedNumber = cursorInfo.getString(cursorInfo.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+                    info.addContact(normalizedNumber == null ? number : normalizedNumber);
                     entries.put(info.getUid(), info);
                 }
 

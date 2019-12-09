@@ -1,6 +1,7 @@
 package ru.fagci.tuihome;
 
 import android.graphics.Bitmap;
+import android.view.View;
 import android.widget.ImageView;
 import androidx.databinding.BindingAdapter;
 import ru.fagci.tuihome.model.ModelObject;
@@ -19,5 +20,10 @@ public class BindingAdapters {
     @BindingAdapter("android:src")
     public static void setImageResource(ImageView imageView, ModelObject modelObject) {
         imageView.setImageBitmap(modelObject.getBitmap(imageView.getContext()));
+    }
+
+    @BindingAdapter("android:visibility")
+    public static void setVisibility(View view, Boolean value) {
+        view.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 }

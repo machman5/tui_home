@@ -33,7 +33,9 @@ public class ContactModel extends ModelObject {
     @Override
     public List<ModelAction> getAvailableActions() {
         List<ModelAction> aa = super.getAvailableActions();
-        aa.add(new ModelActionPhoneCall());
+        for (String phone : contacts) {
+            aa.add(new ModelActionPhoneCall(phone));
+        }
         return aa;
     }
 
