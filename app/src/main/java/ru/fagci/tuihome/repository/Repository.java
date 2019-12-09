@@ -14,10 +14,6 @@ public class Repository {
         return isLoading;
     }
 
-    void setLoadingState(Boolean state) {
-        isLoading.postValue(state);
-    }
-
     public MutableLiveData<ModelObjectMap> getItems() {
         if (!isLoadInitiated) {
             isLoadInitiated = true;

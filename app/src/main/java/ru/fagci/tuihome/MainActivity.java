@@ -2,6 +2,7 @@ package ru.fagci.tuihome;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.widget.SearchView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -110,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateModelListItems(ModelObjectMap models) {
+        TimingLogger timingLogger = new TimingLogger("AsyncTask", "Instance: " + models.values().iterator().next().getClass().getSimpleName());
+        timingLogger.addSplit("start");
 //        List<ModelObject> oldItems = modelListAdapter.getItems();
         List<ModelObject> newItems = new ArrayList<>(models.values());
         Log.i("ADAPTER", "Set data start");
@@ -120,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
 //        diffResult.dispatchUpdatesTo(modelListAdapter);
         modelListAdapter.notifyDataSetChanged();
         Log.i("ADAPTER", "Set data end");
+        timingLogger.addSplit("end");
+        timingLogger.dumpToLog();
     }
 
     @Override
